@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<title>Progression</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Progression">
+
+
+<style>
+:root {
+  --bg: #0c0c0e;
+  --surface: #161618;
+  --surface2: #1e1e22;
+  --border: #2a2a30;
+  --border2: #383840;
+  --text: #f0f0f2;
+  --text2: #a0a0aa;
+  --text3: #606068;
+  --accent: #e8ff5a;
+  --accent-dark: #b8cc3a;
+  --green: #3de08a;
+  --green-dim: #1a5c3a;
+  --amber: #ffb547;
+  --amber-dim: #5c3e10;
+  --blue: #5ab4ff;
+  --blue-dim: #1a3a5c;
+  --red: #ff5a5a;
+  --r: 12px;
+  --r-sm: 8px;
+  --r-xs: 6px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html { background: var(--bg); }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  min-height: 100vh;
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+}
+
+/* HEADER */
+.header {
+  padding: 56px 20px 24px;
+  background: var(--bg);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid var(--border);
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.logo {
+  font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.logo span { color: var(--accent); }
+
+.stats-row {
+  display: flex;
+  gap: 6px;
+}
+
+.stat-chip {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 5px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 52px;
+}
+
+.stat-chip-n {
+  font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif; letter-spacing: 0.05em;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--text);
+  line-height: 1;
+  letter-spacing: 0.05em;
+}
+
+.stat-chip-n.amber { color: var(--amber); }
+
+.stat-chip-l {
+  font-size: 9px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+  margin-top: 1px;
+}
+
+/* BANNER */
+.banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--text2);
+  margin: 0 20px 20px;
+}
+
+.banner-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.banner-dot.active { background: var(--green); box-shadow: 0 0 6px var(--green); }
+.banner-dot.rest { background: var(--text3); }
+.banner strong { color: var(--text); font-weight: 600; }
+
+/* TABS */
+.tabs-wrap {
+  padding: 0 20px 20px;
+  background: var(--bg);
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.tab {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--r-sm);
+  padding: 10px 6px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.tab-label {
+  font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif; letter-spacing: 0.05em;
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--text);
+  letter-spacing: 0.08em;
+  display: block;
+}
+
+.tab-sub {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text2);
+  display: block;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tab.active {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.tab.active .tab-label { color: #0c0c0e; }
+.tab.active .tab-sub { color: rgba(12,12,14,0.6); }
+
+.tab.flagged:not(.active) {
+  border-color: var(--amber);
+}
+
+.tab.flagged:not(.active) .tab-label { color: var(--amber); }
+
+.tab-pip {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--green);
+  margin: 4px auto 0;
+}
+
+.tab.active .tab-pip { background: rgba(12,12,14,0.5); }
+
+/* SESSION */
+.session {
+  padding: 0 16px;
+}
+
+.session-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.session-header {
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.session-info {}
+
+.session-day {
+  font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.session-type {
+  font-size: 12px;
+  color: var(--text3);
+  margin-top: 2px;
+}
+
+.session-btns {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.btn {
+  font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: var(--r-xs);
+  cursor: pointer;
+  border: 1px solid;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: transparent;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn-primary:active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #0c0c0e;
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: var(--border2);
+  color: var(--text3);
+}
+
+.btn-ghost:active { background: var(--surface2); }
+
+/* MUSCLE GROUP */
+.muscle-label {
+  padding: 8px 18px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  border-top: 1px solid var(--border);
+}
+
+/* EXERCISE ROW */
+.ex {
+  display: flex;
+  align-items: center;
+  padding: 13px 18px;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+}
+
+.ex:last-child { border-bottom: none; }
+
+.ex-info { flex: 1; min-width: 0; }
+
+.ex-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+.ex-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: center;
+}
+
+.pill {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.pill-sets {
+  background: transparent;
+  color: var(--text);
+  padding: 0;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.pill-reps {
+  background: transparent;
+  color: var(--blue);
+  padding: 0;
+  font-size: 12px;
+  font-weight: 600;
+}
+.pill-sep {
+  color: var(--text3);
+  font-weight: 400;
+}
+.pill-range {
+  color: var(--text3);
+  font-weight: 400;
+  font-size: 11px;
+}
+
+.pill-flag {
+  background: var(--amber);
+  color: #0c0c0e;
+  cursor: pointer;
+  font-size: 10px;
+  padding: 3px 8px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  animation: pulse-flag 2s ease-in-out infinite;
+}
+.pill-flag:active { opacity: 0.8; transform: scale(0.96); }
+@keyframes pulse-flag {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.ex-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.weight-input {
+  width: 168px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--r-xs);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 8px;
+  text-align: center;
+  outline: none;
+  -webkit-appearance: none;
+  transition: border-color 0.15s;
+}
+
+.weight-input:focus { border-color: var(--accent); }
+
+.prog {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.prog-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  min-height: 20px;
+}
+.prog-flag-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.flag-mid {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.prog-track {
+  width: 50px;
+  height: 3px;
+  background: var(--border2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.prog-fill {
+  height: 100%;
+  background: var(--green);
+  border-radius: 2px;
+  transition: width 0.4s;
+}
+
+.prog-pct {
+  font-size: 10px;
+  color: var(--text3);
+  min-width: 26px;
+  text-align: right;
+  font-weight: 500;
+}
+
+/* MODAL */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  z-index: 100;
+  align-items: flex-end;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.overlay.open { display: flex; }
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--r) var(--r) 0 0;
+  padding: 24px 20px 32px;
+  width: 100%;
+}
+
+.modal-handle {
+  width: 36px;
+  height: 4px;
+  background: var(--border2);
+  border-radius: 2px;
+  margin: 0 auto 20px;
+}
+
+.modal-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--amber);
+  background: var(--amber-dim);
+  border-radius: 20px;
+  padding: 3px 10px;
+  margin-bottom: 10px;
+}
+
+.modal-name {
+  font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.modal-desc {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.modal-hint {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--blue);
+  background: var(--blue-dim);
+  border-radius: var(--r-xs);
+  padding: 10px 14px;
+  margin-bottom: 20px;
+}
+
+.modal-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 8px;
+}
+
+.modal-input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--r-sm);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  padding: 14px 16px;
+  outline: none;
+  -webkit-appearance: none;
+  margin-bottom: 16px;
+  transition: border-color 0.15s;
+}
+
+.modal-input:focus { border-color: var(--accent); }
+
+.modal-btns {
+  display: flex;
+  gap: 10px;
+}
+
+.modal-btns .btn { flex: 1; text-align: center; padding: 13px; font-size: 14px; }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 20px);
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--green-dim);
+  border: 1px solid var(--green);
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--green);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s;
+  z-index: 200;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="logo">Pro<span>gression</span></div>
+    <div class="stats-row">
+      <div class="stat-chip">
+        <div class="stat-chip-n" id="s-sess">0</div>
+        <div class="stat-chip-l">Sessions</div>
+      </div>
+      <div class="stat-chip">
+        <div class="stat-chip-n" id="s-upg">0</div>
+        <div class="stat-chip-l">Upgrades</div>
+      </div>
+      <div class="stat-chip">
+        <div class="stat-chip-n amber" id="s-flags">0</div>
+        <div class="stat-chip-l">Flags</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="banner" id="banner">
+  <div class="banner-dot" id="bdot"></div>
+  <span id="btext"></span>
+</div>
+
+<div class="tabs-wrap">
+  <div class="tabs" id="tabs"></div>
+</div>
+
+<div class="session">
+  <div class="session-card">
+    <div class="session-header">
+      <div class="session-info">
+        <div class="session-day" id="sday"></div>
+        <div class="session-type" id="stype"></div>
+      </div>
+      <div class="session-btns">
+        <button class="btn btn-ghost" onclick="skip()">Skip</button>
+        <button class="btn btn-primary" onclick="complete()">Done ✓</button>
+      </div>
+    </div>
+    <div id="exlist"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-badge" id="m-badge">Progression</div>
+    <div class="modal-name" id="m-name"></div>
+    <div class="modal-desc" id="m-desc"></div>
+    <div class="modal-hint" id="m-hint"></div>
+    <div id="m-weight-section">
+      <div class="modal-label">New weight</div>
+      <input class="modal-input" type="text" id="m-input" inputmode="text"/>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal()">Later</button>
+      <button class="btn btn-primary" id="m-confirm" onclick="saveWeight()">Update</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// COACHING PROFILES — every exercise has a type and progression path
+const COACHING = {
+  // WEIGHTED — flag after rep max hit, suggest weight increase
+  'mon_dips':  {type:'weighted', suggest:'+2.5kg on vest', flag:'Weight increase', sessions:0},
+  'mon_par':   {type:'vest',     suggest:'Add 2.3kg plate to vest', flag:'Vest load up', sessions:4},
+  'mon_dec':   {type:'tempo',    flag:'Tempo progression',
+    steps:['Slow it down — 3s down, 1s pause, 1s up','Push the tempo — 4s down, 2s pause, 1s up','Try decline diamond push-ups for added difficulty','Add vest 2.3kg and reset to 3s tempo']},
+  'mon_sp':    {type:'weighted', suggest:'+5kg', flag:'Weight increase', sessions:0},
+  'mon_pike':  {type:'tempo',    flag:'Tempo progression',
+    steps:['Slow tempo — 3s down, 2s hold at top, 1s up','4s down, 3s hold — really feel the shoulders','Progress to wall handstand push-up negatives','Full wall handstand push-up — you are ready']},
+  'mon_ohe':   {type:'weighted', suggest:'+2.5kg', flag:'Weight increase', sessions:0},
+  'mon_bss':   {type:'weighted', suggest:'+2.3kg vest plate', flag:'Load increase', sessions:0},
+  'mon_le':    {type:'weighted', suggest:'+5kg on machine', flag:'Weight increase', sessions:0},
+  'mon_cr':    {type:'weighted', suggest:'+2.3kg vest plate', flag:'Load increase', sessions:0},
+
+  'wed_pu':    {type:'weighted', suggest:'+2.5kg weight belt', flag:'Weight increase', sessions:0},
+  'wed_cu':    {type:'weighted', suggest:'+2.5kg weight belt', flag:'Weight increase', sessions:0},
+  'wed_awg':   {type:'vest',     suggest:'Add 2.3kg plate to vest', flag:'Vest load up', sessions:4},
+  'wed_acg':   {type:'vest',     suggest:'Add 2.3kg plate to vest', flag:'Vest load up', sessions:4},
+  'wed_cp':    {type:'weighted', suggest:'+2.5kg', flag:'Weight increase', sessions:0},
+  'wed_sh':    {type:'weighted', suggest:'+5kg on barbell', flag:'Weight increase', sessions:0},
+  'wed_bc':    {type:'weighted', suggest:'+2.5kg', flag:'Weight increase', sessions:0},
+  'wed_kb':    {type:'tempo',    flag:'Tempo progression',
+    steps:['Slow curls — 3s up, 2s squeeze, 3s down','4s up, 3s squeeze, 4s down — feel the burn','Try 21s: 7 bottom half, 7 top half, 7 full reps','Go heavier KB or switch to barbell curls']},
+  'wed_lp':    {type:'weighted', suggest:'+5kg on machine', flag:'Weight increase', sessions:0},
+  'wed_lc':    {type:'weighted', suggest:'+2.5kg', flag:'Weight increase', sessions:0},
+
+  'fri_bss':   {type:'weighted', suggest:'+2.3kg vest plate', flag:'Load increase', sessions:0},
+  'fri_cr':    {type:'weighted', suggest:'+2.3kg vest plate', flag:'Load increase', sessions:0},
+  'fri_acg':   {type:'vest',     suggest:'Add 2.3kg plate to vest', flag:'Vest load up', sessions:4},
+  'fri_pp':    {type:'weighted', suggest:'+2.5kg plate', flag:'Weight increase', sessions:0},
+  'fri_d':     {type:'vest',     suggest:'Add 2.3kg plate to vest', flag:'Vest load up', sessions:4},
+  'fri_dp':    {type:'tempo',    flag:'Tempo progression',
+    steps:['Slow it — 3s down, 1s pause at chest, 1s up','4s down, 2s pause — really squeeze the triceps','Try archer diamond variation for extra difficulty','Add vest 2.3kg and reset tempo to 3s']},
+  'fri_wp':    {type:'tempo',    flag:'Tempo progression',
+    steps:['Slow tempo — 3s down, 1s pause, 1s up','4s down, 2s pause — feel the chest stretch','Try archer push-ups — one arm extended each side','Add vest 2.3kg and return to normal tempo']},
+  'fri_bo':    {type:'finisher', flag:''},
+
+  'sat_bc':    {type:'weighted', suggest:'+2.5kg', flag:'Weight increase', sessions:0},
+  'sat_cp':    {type:'weighted', suggest:'+2.5kg', flag:'Weight increase', sessions:0},
+  'sat_sp':    {type:'weighted', suggest:'+5kg', flag:'Weight increase', sessions:0},
+  'sat_ohe':   {type:'weighted', suggest:'+2.5kg', flag:'Weight increase', sessions:0},
+  'sat_pl':    {type:'timed',    flag:'Time progression',
+    steps:['Hit 75 seconds — 15s extra on each set','Push to 90 seconds per set','Try 2 minutes — elite level','Add weight plate on back for weighted plank']},
+  'sat_db':    {type:'timed',    flag:'Form progression',
+    steps:['Perfect the form — arms fully extended, controlled','Add 10s per set — increase time under tension','Try single leg deadbug for extra core challenge','Add a light dumbbell in each hand']},
+  'sat_hr':    {type:'timed',    flag:'Time progression',
+    steps:['Increase to 45 seconds per set','Push to 60 seconds — full minute hollow hold','Try slower rocking — more control, harder','Add a small weight between feet']},
+  'sat_dr':    {type:'tempo',    flag:'Rep progression',
+    steps:['Control the descent — 4s down, pause, pull back up','Work up to 4 reps per set','Push to 5 reps — elite territory','Slow descent to 5s — brutal']},
+  'sat_spl':   {type:'timed',    flag:'Time progression',
+    steps:['Push to 75 seconds each side','90 seconds per side — strong obliques','2 minutes per side — exceptional','Add weight plate on hip for loaded side plank']},
+  'sat_sb':    {type:'weighted', suggest:'+2.5kg dumbbell', flag:'Weight increase', sessions:0},
+};
+
+const DAYS = [
+  {
+    id:'mon', label:'Mon', full:'Monday', sub:'Push & legs', jsDay:1,
+    groups:[
+      {name:'Chest', ex:[
+        {id:'mon_dips', name:'Weighted dips', sets:5, min:6, max:8, weight:'BW + vest', compound:true},
+        {id:'mon_par', name:'Parallets push-ups', sets:4, min:8, max:10, weight:'BW + vest'},
+        {id:'mon_dec', name:'Decline push-ups', sets:3, min:12, max:12, weight:'BW'},
+      ]},
+      {name:'Shoulders', ex:[
+        {id:'mon_sp', name:'Shoulder press', sets:4, min:6, max:8, weight:'BB+20kg', compound:true},
+        {id:'mon_pike', name:'Pike push-ups', sets:4, min:10, max:10, weight:'BW'},
+      ]},
+      {name:'Triceps', ex:[
+        {id:'mon_ohe', name:'Overhead extensions', sets:4, min:10, max:12, weight:'BB+10kg'},
+      ]},
+      {name:'Legs', ex:[
+        {id:'mon_bss', name:'Bulgarian split squats', sets:4, min:12, max:12, weight:'BW+WV4.6kg', compound:true},
+        {id:'mon_le', name:'Leg extensions', sets:4, min:12, max:12, weight:'45kg'},
+        {id:'mon_cr', name:'Calf raises', sets:3, min:15, max:20, weight:'BW+WV4.6kg'},
+      ]},
+    ]
+  },
+  {
+    id:'wed', label:'Wed', full:'Wednesday', sub:'Pull & legs', jsDay:3,
+    groups:[
+      {name:'Back & traps', ex:[
+        {id:'wed_pu', name:'Pull-ups', sets:5, min:6, max:8, weight:'BW + belt', compound:true},
+        {id:'wed_cu', name:'Chin-ups', sets:4, min:8, max:8, weight:'BW + belt', compound:true},
+        {id:'wed_awg', name:'Australian pull-ups WG', sets:4, min:8, max:10, weight:'BW + vest'},
+        {id:'wed_acg', name:'Australian pull-ups CG', sets:4, min:8, max:10, weight:'BW + vest'},
+        {id:'wed_cp', name:'Chest pulls', sets:4, min:10, max:10, weight:'BB+20kg'},
+        {id:'wed_sh', name:'Shoulder shrugs', sets:4, min:12, max:15, weight:'Barbell'},
+      ]},
+      {name:'Biceps', ex:[
+        {id:'wed_bc', name:'Bicep curls', sets:4, min:8, max:10, weight:'BB+20kg'},
+        {id:'wed_kb', name:'KB bicep curls', sets:4, min:15, max:15, weight:'14kg'},
+      ]},
+      {name:'Legs', ex:[
+        {id:'wed_lp', name:'Single leg press', sets:4, min:10, max:10, weight:'45kg', compound:true},
+        {id:'wed_lc', name:'Leg curls', sets:4, min:10, max:10, weight:'17.5kg'},
+      ]},
+    ]
+  },
+  {
+    id:'fri', label:'Fri', full:'Friday', sub:'Legs & conditioning', jsDay:5,
+    groups:[
+      {name:'Legs', ex:[
+        {id:'fri_bss', name:'Bulgarian split squats', sets:4, min:8, max:10, weight:'BW + weight', compound:true},
+        {id:'fri_cr', name:'Calf raises', sets:3, min:20, max:25, weight:'BW + weight'},
+      ]},
+      {name:'Back', ex:[
+        {id:'fri_acg', name:'Australian pull-ups CG', sets:4, min:10, max:12, weight:'BW + vest'},
+        {id:'fri_pp', name:'Plate chest pulls', sets:4, min:15, max:15, weight:'10kg'},
+      ]},
+      {name:'Chest & triceps', ex:[
+        {id:'fri_d', name:'Dips', sets:4, min:8, max:10, weight:'BW + vest'},
+        {id:'fri_dp', name:'Diamond push-ups', sets:4, min:12, max:12, weight:'BW'},
+        {id:'fri_wp', name:'Wide push-ups', sets:4, min:15, max:15, weight:'BW'},
+        {id:'fri_bo', name:'Push-up burnout', sets:1, min:40, max:40, weight:'BW'},
+      ]},
+    ]
+  },
+  {
+    id:'sat', label:'Sat', full:'Saturday', sub:'Upper body & core', jsDay:6,
+    groups:[
+      {name:'Biceps', ex:[{id:'sat_bc', name:'Bicep curls', sets:5, min:6, max:8, weight:'BB+20kg', compound:true}]},
+      {name:'Back', ex:[{id:'sat_cp', name:'Chest pulls', sets:4, min:8, max:10, weight:'BB+20kg'}]},
+      {name:'Shoulders', ex:[{id:'sat_sp', name:'Shoulder press', sets:4, min:8, max:10, weight:'BB+20kg', compound:true}]},
+      {name:'Triceps', ex:[{id:'sat_ohe', name:'Overhead extensions', sets:4, min:8, max:10, weight:'BB+20kg'}]},
+      {name:'Core', ex:[
+        {id:'sat_pl', name:'Plank', sets:3, min:1, max:1, weight:'1 min', timed:true},
+        {id:'sat_db', name:'Deadbug', sets:3, min:1, max:1, weight:'1 min', timed:true},
+        {id:'sat_hr', name:'Hollow rocks', sets:3, min:1, max:1, weight:'30 sec', timed:true},
+        {id:'sat_dr', name:'Dragonfly', sets:3, min:3, max:3, weight:'BW'},
+        {id:'sat_spl', name:'Side plank', sets:3, min:1, max:1, weight:'1 min', timed:true},
+      ]},
+      {name:'Obliques', ex:[{id:'sat_sb', name:'Dumbbell side bend', sets:4, min:15, max:15, weight:'15kg'}]},
+    ]
+  },
+];
+
+const DN = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+function allEx() {
+  const a = [];
+  DAYS.forEach(d => d.groups.forEach(g => g.ex.forEach(e => a.push(e))));
+  return a;
+}
+
+function ld() { try { return JSON.parse(localStorage.getItem('prog_v7') || '{}'); } catch(e) { return {}; } }
+function sv(s) { try { localStorage.setItem('prog_v7', JSON.stringify(s)); } catch(e) {} }
+
+let S = ld();
+if (!S.ex) S.ex = {};
+if (!S.sess) S.sess = 0;
+if (!S.upg) S.upg = 0;
+if (!S.completed) S.completed = {};
+if (!S.skipped) S.skipped = {};
+if (!S.sessionCount) S.sessionCount = {};
+function todayStr(){return new Date().toISOString().slice(0,10);}
+function isDayDone(id){return S.completed[id]===todayStr();}
+allEx().forEach(e => { if (!S.ex[e.id]) S.ex[e.id] = { reps: e.min, weight: e.weight, flagged: false }; });
+
+const todayJS = new Date().getDay();
+const todayI = DAYS.findIndex(d => d.jsDay === todayJS);
+function nextI() {
+  for (let i = 1; i <= 7; i++) {
+    const c = (todayJS + i) % 7;
+    const f = DAYS.findIndex(d => d.jsDay === c);
+    if (f > -1) return f;
+  }
+  return 0;
+}
+let cur = todayI > -1 ? todayI : nextI();
+let mTarget = null;
+
+function dayFlags(id) {
+  const d = DAYS.find(x => x.id === id);
+  if (!d) return 0;
+  let n = 0;
+  d.groups.forEach(g => g.ex.forEach(e => { if (S.ex[e.id] && S.ex[e.id].flagged) n++; }));
+  return n;
+}
+
+function totFlags() {
+  let n = 0;
+  allEx().forEach(e => { if (S.ex[e.id] && S.ex[e.id].flagged) n++; });
+  return n;
+}
+
+function sug(e) {
+  const c = COACHING[e.id];
+  if (c && c.suggest) return c.suggest;
+  if (e.compound) return 'Suggested: +5 kg — compound lift';
+  if (e.weight && (e.weight.includes('BW') || e.weight.includes('vest') || e.weight.includes('belt'))) return 'Add more vest or belt weight';
+  return 'Suggested: +2.5 kg';
+}
+
+function renderBanner() {
+  const dot = document.getElementById('bdot');
+  const txt = document.getElementById('btext');
+  if (todayI > -1) {
+    dot.className = 'banner-dot active';
+    txt.innerHTML = 'Today is <strong>' + DN[todayJS] + '</strong> — training day loaded';
+  } else {
+    dot.className = 'banner-dot rest';
+    txt.innerHTML = '<strong>' + DN[todayJS] + '</strong> is a rest day · Next: <strong>' + DAYS[nextI()].full + '</strong>';
+  }
+}
+
+function renderTabs() {
+  const c = document.getElementById('tabs');
+  c.innerHTML = '';
+  DAYS.forEach((d, i) => {
+    const f = dayFlags(d.id);
+    const isToday = d.jsDay === todayJS;
+    const btn = document.createElement('button');
+    btn.className = 'tab' + (i === cur ? ' active' : '') + (f > 0 ? ' flagged' : '');
+    btn.innerHTML =
+      '<span class="tab-label">' + d.label + (f > 0 ? ' ⚑' : '') + '</span>' +
+      '<span class="tab-sub">' + d.sub + '</span>' +
+      (isToday ? '<div class="tab-pip"></div>' : '');
+    btn.onclick = () => { cur = i; renderSession(); renderTabs(); };
+    c.appendChild(btn);
+  });
+}
+
+function renderSession() {
+  const day = DAYS[cur];
+  const isToday = day.jsDay === todayJS;
+  document.getElementById('sday').textContent = day.full + (isToday ? ' — today' : '');
+  document.getElementById('stype').textContent = day.sub;
+  const c = document.getElementById('exlist');
+  c.innerHTML = '';
+
+  day.groups.forEach(g => {
+    const gl = document.createElement('div');
+    gl.className = 'muscle-label';
+    gl.textContent = g.name;
+    c.appendChild(gl);
+
+    g.ex.forEach(ex => {
+      const xd = S.ex[ex.id];
+      const isTimed = ex.timed;
+      const isFixed = ex.min === ex.max;
+      const pct = isFixed ? 100 : Math.round((xd.reps - ex.min) / (ex.max - ex.min) * 100);
+
+      const row = document.createElement('div');
+      row.className = 'ex' + (xd.flagged ? ' flagged' : '');
+
+      const repPill = isTimed
+        ? `<span class="pill pill-sets">${xd.weight}</span>`
+        : `<span class="pill pill-reps"><span class="pill-sets">${ex.sets} sets</span><span class="pill-sep"> / </span>${xd.reps} reps${ex.min !== ex.max ? ' <span class="pill-range">('+ex.min+'–'+ex.max+')</span>' : ''}</span>`;
+
+      const cInfo = COACHING[ex.id];
+      const flagLabel = cInfo ? (cInfo.type === 'tempo' || cInfo.type === 'timed' ? '⚑ Progression tip' : '⚑ ' + cInfo.flag + ' tip') : '⚑ Increase weight tip';
+      const flagPill = xd.flagged
+        ? `<span class="pill pill-flag" onclick="openModal('${ex.id}')">${flagLabel}</span>`
+        : '';
+
+      const bar = (!isTimed && !isFixed)
+        ? `<div class="prog"><div class="prog-track"><div class="prog-fill" style="width:${pct}%"></div></div><span class="prog-pct">${pct}%</span></div>`
+        : '';
+
+      row.innerHTML = `
+        <div class="ex-info">
+          <div class="ex-name">${ex.name}</div>
+          <div class="ex-pills">
+            ${repPill}
+          </div>
+        </div>
+        <div class="ex-right">
+          <input class="weight-input" type="text" value="${xd.weight}" onchange="upW('${ex.id}', this.value)" />
+          <div class="prog-row">
+            ${xd.flagged ? flagPill : ''}
+            ${bar}
+          </div>
+        </div>`;
+      c.appendChild(row);
+    });
+  });
+}
+
+function updateStats() {
+  document.getElementById('s-sess').textContent = S.sess;
+  document.getElementById('s-upg').textContent = S.upg;
+  document.getElementById('s-flags').textContent = totFlags();
+}
+
+function updateDoneBtn() {
+  const done = isDayDone(DAYS[cur].id);
+  const btn = document.querySelector('.btn-primary');
+  if (!btn) return;
+  if (done) {
+    btn.style.background = 'var(--accent)';
+    btn.style.borderColor = 'var(--accent)';
+    btn.style.color = '#0c0c0e';
+    btn.textContent = 'Done ✓';
+  } else {
+    btn.style.background = 'transparent';
+    btn.style.borderColor = 'var(--accent)';
+    btn.style.color = 'var(--accent)';
+    btn.textContent = 'Done ✓';
+  }
+}
+function render() { renderBanner(); renderTabs(); renderSession(); updateStats(); updateDoneBtn(); updateSkipBtn(); }
+
+function complete() {
+  const dayId = DAYS[cur].id;
+  if (isDayDone(dayId)) {
+    delete S.completed[dayId];
+    sv(S);
+    updateDoneBtn();
+    toast('Session unmarked');
+    return;
+  }
+  DAYS[cur].groups.forEach(g => g.ex.forEach(ex => {
+    const c = COACHING[ex.id];
+    const xd = S.ex[ex.id];
+    if (!c || c.type === 'finisher' || c.type === 'timed') return;
+    if (c.type === 'weighted' || c.type === 'vest') {
+      if (ex.min !== ex.max && !xd.flagged) {
+        xd.reps = Math.min(xd.reps + 1, ex.max);
+        if (xd.reps >= ex.max) xd.flagged = true;
+      } else if (ex.min === ex.max && !xd.flagged) {
+        if (!S.sessionCount[ex.id]) S.sessionCount[ex.id] = 0;
+        S.sessionCount[ex.id]++;
+        const threshold = c.sessions > 0 ? c.sessions : 4;
+        if (S.sessionCount[ex.id] >= threshold) { xd.flagged = true; S.sessionCount[ex.id] = 0; }
+      }
+    } else if (c.type === 'tempo') {
+      if (!S.sessionCount[ex.id]) S.sessionCount[ex.id] = 0;
+      S.sessionCount[ex.id]++;
+      if (S.sessionCount[ex.id] >= 4) { xd.flagged = true; S.sessionCount[ex.id] = 0; }
+    }
+  }));
+
+  // also flag timed exercises
+  DAYS[cur].groups.forEach(g => g.ex.forEach(ex => {
+    const c = COACHING[ex.id];
+    const xd = S.ex[ex.id];
+    if (!c || c.type !== 'timed') return;
+    if (!S.sessionCount[ex.id]) S.sessionCount[ex.id] = 0;
+    S.sessionCount[ex.id]++;
+    if (S.sessionCount[ex.id] >= 4) { xd.flagged = true; S.sessionCount[ex.id] = 0; }
+  }));
+
+  S.sess++;
+  S.completed[dayId] = todayStr();
+  sv(S);
+  toast('Session complete — reps updated');
+  render();
+}
+
+function skip() {
+  const dayId = DAYS[cur].id;
+  if (S.skipped && S.skipped[dayId] === todayStr()) {
+    delete S.skipped[dayId];
+    sv(S);
+    updateSkipBtn();
+    toast('Skip removed');
+    return;
+  }
+  if (!S.skipped) S.skipped = {};
+  S.skipped[dayId] = todayStr();
+  sv(S);
+  updateSkipBtn();
+  toast('Session skipped — no reps added');
+}
+
+function isDaySkipped(dayId) { return S.skipped && S.skipped[dayId] === todayStr(); }
+
+function updateSkipBtn() {
+  const btn = document.querySelector('.btn-ghost:not(#modal .btn-ghost)');
+  if (!btn) return;
+  const skipped = isDaySkipped(DAYS[cur].id);
+  btn.style.borderColor = skipped ? '#888890' : '';
+  btn.style.background = skipped ? '#888890' : '';
+  btn.style.color = skipped ? '#0c0c0e' : '';
+}
+
+function upW(id, val) {
+  const ex = allEx().find(e => e.id === id);
+  const xd = S.ex[id];
+  xd.weight = val;
+  if (xd.flagged) {
+    xd.flagged = false;
+    S.upg++;
+    if (ex.min !== ex.max) xd.reps = ex.min;
+    if (S.sessionCount[id]) S.sessionCount[id] = 0;
+    toast('Weight updated — keep pushing!');
+  }
+  sv(S);
+  render();
+}
+
+function getCoachStep(id) {
+  const c = COACHING[id];
+  if (!c || !c.steps) return null;
+  const idx = Math.min(S.sessionCount[id] || 0, c.steps.length - 1);
+  return c.steps[idx];
+}
+
+function openModal(id) {
+  const ex = allEx().find(e => e.id === id);
+  const xd = S.ex[id];
+  const c = COACHING[id];
+  mTarget = id;
+
+  document.getElementById('m-name').textContent = ex.name;
+  document.getElementById('m-badge').textContent = c ? c.flag : 'Progression';
+
+  const ws = document.getElementById('m-weight-section');
+  const confirmBtn = document.getElementById('m-confirm');
+
+  if (!c || c.type === 'weighted' || c.type === 'vest') {
+    // Show weight input
+    ws.style.display = 'block';
+    confirmBtn.textContent = 'Update weight';
+    if (c && c.type === 'vest') {
+      document.getElementById('m-desc').textContent = 'You have completed enough sessions at this load. Time to add more vest weight.';
+      document.getElementById('m-hint').textContent = c.suggest;
+    } else {
+      document.getElementById('m-desc').textContent = ex.min !== ex.max
+        ? 'Hit the top of the rep range (' + ex.max + ' reps). Increase the weight and reps reset to ' + ex.min + '.'
+        : 'Strong consistency — time to add more weight.';
+      document.getElementById('m-hint').textContent = c ? c.suggest : sug(ex);
+    }
+    document.getElementById('m-input').value = xd.weight;
+  } else {
+    // Coaching only — no weight input
+    ws.style.display = 'none';
+    confirmBtn.textContent = 'Got it';
+    const step = getCoachStep(id);
+    if (c.type === 'tempo') {
+      document.getElementById('m-desc').textContent = 'Your body has adapted — the weight stays the same but the exercise gets harder.';
+    } else if (c.type === 'timed') {
+      document.getElementById('m-desc').textContent = 'Time to increase the challenge on this exercise.';
+    }
+    document.getElementById('m-hint').textContent = step || 'Keep pushing — great consistency.';
+  }
+
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('overlay').classList.remove('open');
+  mTarget = null;
+}
+
+function saveWeight() {
+  if (!mTarget) return;
+  const c = COACHING[mTarget];
+  const ex = allEx().find(e => e.id === mTarget);
+  const xd = S.ex[mTarget];
+
+  if (!c || c.type === 'weighted' || c.type === 'vest') {
+    const val = document.getElementById('m-input').value.trim();
+    if (!val) return;
+    xd.weight = val;
+    if (ex.min !== ex.max) xd.reps = ex.min;
+    xd.flagged = false;
+    S.upg++;
+    sv(S);
+    closeModal();
+    toast('Weight updated — keep pushing!');
+  } else {
+    // Coaching acknowledged — advance step
+    xd.flagged = false;
+    if (!S.sessionCount[mTarget]) S.sessionCount[mTarget] = 0;
+    S.sessionCount[mTarget] = Math.min(S.sessionCount[mTarget] + 1, (c.steps ? c.steps.length - 1 : 0));
+    S.upg++;
+    sv(S);
+    closeModal();
+    toast('Progression noted — apply next session!');
+  }
+  render();
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+document.getElementById('overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+render();
+</script>
+</body>
+</html>
