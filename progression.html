@@ -49,7 +49,7 @@ body {
 
 /* HEADER */
 .header {
-  padding: 56px 20px 24px;
+  padding: 16px 16px 16px;
   background: var(--bg);
   position: sticky;
   top: 0;
@@ -60,16 +60,18 @@ body {
 .header-top {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 16px;
+  align-items: center;
+  margin-bottom: 0;
+  gap: 8px;
 }
 
 .logo {
   font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.02em;
+  flex-shrink: 0;
 }
 
 .logo span { color: var(--accent); }
@@ -77,17 +79,18 @@ body {
 .stats-row {
   display: flex;
   gap: 6px;
+  flex-shrink: 0;
 }
 
 .stat-chip {
   background: var(--surface2);
   border: 1px solid var(--border);
   border-radius: 20px;
-  padding: 5px 12px;
+  padding: 4px 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 52px;
+  min-width: 46px;
 }
 
 .stat-chip-n {
@@ -311,9 +314,8 @@ body {
   font-weight: 500;
   color: var(--text);
   margin-bottom: 6px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  word-break: break-word;
 }
 
 
@@ -383,7 +385,7 @@ body {
 }
 
 .weight-input {
-  width: 168px;
+  width: 120px;
   background: var(--surface2);
   border: 1px solid var(--border2);
   border-radius: var(--r-xs);
