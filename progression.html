@@ -65,7 +65,7 @@ body {
 
 .logo {
   font-family: 'Syne', sans-serif;
-  font-size: 22px;
+  font-size: 34px;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.02em;
@@ -122,7 +122,7 @@ body {
   padding: 10px 14px;
   font-size: 13px;
   color: var(--text2);
-  margin: 0 20px 20px;
+  margin: 16px 20px 20px;
 }
 
 .banner-dot {
@@ -171,7 +171,7 @@ body {
 }
 
 .tab-sub {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   color: var(--text2);
   display: block;
@@ -369,6 +369,18 @@ body {
   animation: pulse-flag 2s ease-in-out infinite;
 }
 .pill-flag:active { opacity: 0.8; transform: scale(0.96); }
+
+.pill-guide {
+  background: var(--blue-dim);
+  color: var(--blue);
+  cursor: pointer;
+  font-size: 10px;
+  padding: 3px 8px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: 20px;
+}
+.pill-guide:active { opacity: 0.8; transform: scale(0.96); }
 @keyframes pulse-flag {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.7; }
@@ -487,6 +499,11 @@ body {
   border-radius: 20px;
   padding: 3px 10px;
   margin-bottom: 10px;
+}
+
+.modal-badge.guide {
+  color: var(--blue);
+  background: var(--blue-dim);
 }
 
 .modal-name {
@@ -899,6 +916,10 @@ function renderSession() {
         ? `<span class="pill pill-flag" onclick="openModal('${ex.id}')">${flagLabel}</span>`
         : '';
 
+      const guidePill = (!xd.flagged && isWeightUnset(ex, xd) && !isTimed)
+        ? `<span class="pill pill-guide" onclick="openRIRGuide('${ex.id}')">▸ Starting guide</span>`
+        : '';
+
       const bar = (!isTimed && !isFixed)
         ? `<div class="prog"><div class="prog-track"><div class="prog-fill" style="width:${pct}%"></div></div><span class="prog-pct">${pct}%</span></div>`
         : '';
@@ -911,9 +932,10 @@ function renderSession() {
           </div>
         </div>
         <div class="ex-right">
-          <input class="weight-input" type="text" value="${xd.weight}" onchange="upW('${ex.id}', this.value)" />
+          <input class="weight-input" type="text" value="${xd.weight}" onclick="openWeightInput('${ex.id}')" readonly style="cursor:pointer;" />
           <div class="prog-row">
             ${xd.flagged ? flagPill : ''}
+            ${guidePill}
             ${bar}
           </div>
         </div>`;
@@ -1042,6 +1064,42 @@ function getCoachStep(id) {
   return c.steps[idx];
 }
 
+function isWeightUnset(ex, xd) {
+  return !xd.weightSet;
+}
+
+function openWeightInput(id) {
+  const ex = allEx().find(e => e.id === id);
+  const xd = S.ex[id];
+  if (isWeightUnset(ex, xd)) {
+    openRIRGuide(id);
+  } else {
+    openModal(id);
+  }
+}
+
+function openRIRGuide(id) {
+  const ex = allEx().find(e => e.id === id);
+  const xd = S.ex[id];
+  mTarget = id;
+  const isCompound = !!ex.compound;
+  const rir = isCompound ? '2–3' : '4–5';
+  const typeLabel = isCompound ? 'compound lift' : 'isolation exercise';
+
+  document.getElementById('m-name').textContent = ex.name;
+  document.getElementById('m-badge').textContent = 'Starting guide';
+  document.getElementById('m-badge').className = 'modal-badge guide';
+  document.getElementById('m-desc').textContent = 'This is a ' + typeLabel + ' — pick a weight where you can hit ' + ex.min + ' reps (your minimum) with ' + rir + ' reps still left in the tank.';
+  document.getElementById('m-hint').textContent = isCompound
+    ? 'Compounds need heavier load — err on the side of challenging yourself.'
+    : 'Isolation work fatigues fast — start conservative and build up.';
+  document.getElementById('m-weight-section').style.display = 'block';
+  document.getElementById('m-confirm').textContent = 'Set weight';
+  document.getElementById('m-input').value = '';
+  document.getElementById('m-input').placeholder = 'e.g. ' + ex.weight;
+  document.getElementById('overlay').classList.add('open');
+}
+
 function openModal(id) {
   const ex = allEx().find(e => e.id === id);
   const xd = S.ex[id];
@@ -1050,6 +1108,7 @@ function openModal(id) {
 
   document.getElementById('m-name').textContent = ex.name;
   document.getElementById('m-badge').textContent = c ? c.flag : 'Progression';
+  document.getElementById('m-badge').className = 'modal-badge';
 
   const ws = document.getElementById('m-weight-section');
   const confirmBtn = document.getElementById('m-confirm');
@@ -1099,6 +1158,7 @@ function saveWeight() {
     const val = document.getElementById('m-input').value.trim();
     if (!val) return;
     xd.weight = val;
+    xd.weightSet = true;
     if (ex.min !== ex.max) xd.reps = ex.min;
     xd.flagged = false;
     S.upg++;
