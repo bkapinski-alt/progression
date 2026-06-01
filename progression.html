@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Progression</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -34,7 +34,7 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-html { background: var(--bg); }
+html { background: var(--bg); overflow-x: hidden; }
 
 body {
   background: var(--bg);
@@ -102,6 +102,8 @@ body {
 
 .stat-chip-n.amber { color: var(--amber); }
 
+
+
 .stat-chip-l {
   font-size: 9px;
   color: var(--text3);
@@ -138,7 +140,7 @@ body {
 
 /* TABS */
 .tabs-wrap {
-  padding: 0 20px 20px;
+  padding: 16px 20px 20px;
   background: var(--bg);
 }
 
@@ -187,13 +189,10 @@ body {
 }
 
 .tab.active .tab-label { color: #0c0c0e; }
+.tab-flag { color: var(--amber); }
+.tab.active .tab-flag { color: #0c0c0e; }
 .tab.active .tab-sub { color: rgba(12,12,14,0.6); }
 
-.tab.flagged:not(.active) {
-  border-color: var(--amber);
-}
-
-.tab.flagged:not(.active) .tab-label { color: var(--amber); }
 
 .tab-pip {
   width: 4px;
@@ -207,7 +206,7 @@ body {
 
 /* SESSION */
 .session {
-  padding: 0 16px;
+  padding: 16px 16px 0;
 }
 
 .session-card {
@@ -381,6 +380,26 @@ body {
   border-radius: 20px;
 }
 .pill-guide:active { opacity: 0.8; transform: scale(0.96); }
+
+.pill-hold {
+  background: var(--surface2);
+  color: var(--text3);
+  cursor: pointer;
+  font-size: 10px;
+  padding: 3px 8px;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  min-width: 92px;
+  text-align: center;
+  box-sizing: border-box;
+}
+.pill-hold.on {
+  background: var(--amber-dim);
+  color: var(--amber);
+  border-color: transparent;
+}
+.pill-hold:active { opacity: 0.8; transform: scale(0.96); }
 @keyframes pulse-flag {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.7; }
@@ -401,9 +420,9 @@ body {
   border-radius: var(--r-xs);
   color: var(--text);
   font-family: 'Inter', system-ui, sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
-  padding: 7px 8px;
+  padding: 7px 6px;
   text-align: center;
   outline: none;
   -webkit-appearance: none;
@@ -506,6 +525,17 @@ body {
   background: var(--blue-dim);
 }
 
+.modal-badge.howto {
+  color: var(--accent);
+  background: rgba(232,255,90,0.12);
+}
+
+.info-dot {
+  color: var(--text3);
+  font-size: 12px;
+  vertical-align: middle;
+}
+
 .modal-name {
   font-family: 'Syne', sans-serif;
   font-size: 20px;
@@ -602,12 +632,8 @@ body {
         <div class="stat-chip-n" id="s-sess">0</div>
         <div class="stat-chip-l">Sessions</div>
       </div>
-      <div class="stat-chip">
-        <div class="stat-chip-n" id="s-upg">0</div>
-        <div class="stat-chip-l">Upgrades</div>
-      </div>
-      <div class="stat-chip">
-        <div class="stat-chip-n amber" id="s-flags">0</div>
+      <div class="stat-chip" id="flags-chip">
+        <div class="stat-chip-n" id="s-flags">0</div>
         <div class="stat-chip-l">Flags</div>
       </div>
     </div>
@@ -661,6 +687,54 @@ body {
 
 <script>
 // COACHING PROFILES — every exercise has a type and progression path
+// EXERCISE DESCRIPTIONS — concise how-to + key cues
+const DESCRIPTIONS = {
+  // MONDAY — Push & legs
+  'mon_dips':  {how:'Weighted dips on the bars, vest on. Lower until shoulders are just below elbows, then press up.', cues:['Lean forward for chest, upright for triceps','Elbows back, not flared','Full lockout at the top']},
+  'mon_par':   {how:'Push-ups on the parallettes for a deeper range, vest on.', cues:['Lower past hand level for the extra stretch','Body in a straight line, brace the core','Control the descent']},
+  'mon_dec':   {how:'Feet elevated, hands on the floor. Lower chest, press back up.', cues:['Higher feet = harder','Elbows ~45°','Full range, chest to floor']},
+  'mon_sp':    {how:'Barbell overhead press from shoulders to lockout.', cues:['Brace, ribs down, no lean back','Bar finishes over the crown','Full lockout']},
+  'mon_pike':  {how:'Hips high in an inverted V, lower the crown of your head toward the floor, press back up.', cues:['Hips stacked over shoulders','Lower under control','Press to full lockout']},
+  'mon_ohe':   {how:'Overhead triceps extension with the barbell, elbows high.', cues:['Elbows stay pointing forward','Stretch at the bottom','Only the forearms move']},
+  'mon_bss':   {how:'Rear foot on a bench, lower the back knee, drive up through the front foot.', cues:['Front shin near vertical','Drop straight down','Through the whole front foot']},
+  'mon_le':    {how:'Leg extension machine, straighten the legs, squeeze, lower slow.', cues:['Squeeze the quads at the top','Slow negative','Full range']},
+  'mon_cr':    {how:'Standing calf raise, full stretch at the bottom to full height at the top.', cues:['All the way up and down','Pause at the top','Add load via vest/held plate']},
+
+  // WEDNESDAY — Pull & legs
+  'wed_pu':    {how:'Pull-ups with the weight belt, palms away. Dead hang to chin over bar.', cues:['Full hang start, shoulders set','Drive elbows down','Control the descent']},
+  'wed_cu':    {how:'Chin-ups with the belt, palms toward you.', cues:['Elbows tucked','Squeeze at the top','Slow negative']},
+  'wed_awg':   {how:'Wide-grip Australian pull-ups under the bar, body straight.', cues:['Straight line, like a moving plank','Pull chest to bar','Squeeze shoulder blades']},
+  'wed_acg':   {how:'Close-grip Australian pull-ups under the bar, body straight.', cues:['Body straight','Elbows close','Chest to bar']},
+  'wed_cp':    {how:'Barbell chest pull / row movement, pull to the torso.', cues:['Lead with the elbows','Squeeze the back','Control back out']},
+  'wed_sh':    {how:'Barbell shrugs — lift the shoulders straight up, squeeze, lower.', cues:['Straight up, not rolling','Squeeze at the top','Full lower for the stretch']},
+  'wed_bc':    {how:'Barbell biceps curl, elbows at your sides.', cues:['No swinging','Elbows pinned','Full stretch at the bottom']},
+  'wed_kb':    {how:'Kettlebell biceps curls.', cues:['Controlled, no swing','Squeeze at the top','Full range']},
+  'wed_lp':    {how:'Single-leg press, lower under control to ~90°, press without locking hard.', cues:['Whole foot pressing','Knee tracks over toes','Back flat on the pad']},
+  'wed_lc':    {how:'Leg curl machine, heels to glutes, squeeze, lower slow.', cues:['Hips down','Squeeze at the top','Slow negative']},
+
+  // FRIDAY — Legs & conditioning
+  'fri_bss':   {how:'Rear foot on a bench, lower the back knee, drive up through the front foot.', cues:['Front shin near vertical','Drop straight down','Through the whole front foot']},
+  'fri_cr':    {how:'Standing calf raise, full range, pause at the top.', cues:['All the way up and down','Pause at the top','Add load to progress']},
+  'fri_acg':   {how:'Close-grip Australian pull-ups under the bar.', cues:['Body straight','Elbows close','Chest to bar']},
+  'fri_pp':    {how:'Plate chest pull / front raise hold with the plate.', cues:['Controlled throughout','Brace the core','No swinging']},
+  'fri_d':     {how:'Dips on the bars, vest on.', cues:['Lean forward for chest','Elbows back','Full lockout']},
+  'fri_dp':    {how:'Diamond push-ups — hands together under the chest.', cues:['Hands form a diamond','Elbows tight to the body','Full range']},
+  'fri_wp':    {how:'Wide push-ups — hands wider than shoulders.', cues:['Wide hands, chest stretch','Body in a line','Full depth']},
+  'fri_bo':    {how:'Push-up burnout — max clean reps to finish.', cues:['Keep form clean as you fatigue','Stop when form breaks','Empty the tank']},
+
+  // SATURDAY — Upper body & core
+  'sat_bc':    {how:'Barbell biceps curl, elbows at your sides.', cues:['No swinging','Elbows pinned','Full stretch']},
+  'sat_cp':    {how:'Barbell chest pull / row, pull to torso.', cues:['Lead with elbows','Squeeze the back','Control out']},
+  'sat_sp':    {how:'Barbell overhead press, shoulders to lockout.', cues:['Brace, no lean back','Bar over the crown','Full lockout']},
+  'sat_ohe':   {how:'Overhead triceps extension with the barbell.', cues:['Elbows forward','Stretch at the bottom','Forearms only']},
+  'sat_pl':    {how:'Plank — straight line head to heels, brace hard.', cues:['Squeeze glutes and abs','No hip sag','Breathe steadily']},
+  'sat_db':    {how:'Dead bug — opposite arm and leg extend, back flat.', cues:['Lower back pressed down','Breathe out as you extend','Slow and controlled']},
+  'sat_hr':    {how:'Hollow rocks — lower back glued to the floor, rock gently.', cues:['Keep the lower back down','Small controlled rocks','Tight hollow shape']},
+  'sat_dr':    {how:'Dragonfly — lower the body as one straight line, control the descent.', cues:['Whole body rigid','Slow descent','Pull back up tight']},
+  'sat_spl':   {how:'Side plank — straight line, hips up.', cues:['Stack the hips','Don’t let the hip drop','Brace the obliques']},
+  'sat_sb':    {how:'Standing dumbbell side bend, bend to the side and back up.', cues:['Bend only sideways','Controlled, no twisting','Feel the obliques']},
+};
+
 const COACHING = {
   // WEIGHTED — flag after rep max hit, suggest weight increase
   'mon_dips':  {type:'weighted', suggest:'+2.5kg on vest', flag:'Weight increase', sessions:0},
@@ -721,19 +795,19 @@ const DAYS = [
     groups:[
       {name:'Chest', ex:[
         {id:'mon_dips', name:'Weighted dips', sets:5, min:6, max:8, weight:'BW + vest', compound:true},
-        {id:'mon_par', name:'Parallets push-ups', sets:4, min:8, max:10, weight:'BW + vest'},
-        {id:'mon_dec', name:'Decline push-ups', sets:3, min:12, max:12, weight:'BW'},
+        {id:'mon_par', name:'Parallets push-ups', sets:4, min:8, max:10, weight:'BW + vest', compound:true},
+        {id:'mon_dec', name:'Decline push-ups', sets:3, min:12, max:15, weight:'BW', compound:true},
       ]},
       {name:'Shoulders', ex:[
         {id:'mon_sp', name:'Shoulder press', sets:4, min:6, max:8, weight:'BB+20kg', compound:true},
-        {id:'mon_pike', name:'Pike push-ups', sets:4, min:10, max:10, weight:'BW'},
+        {id:'mon_pike', name:'Pike push-ups', sets:4, min:10, max:12, weight:'BW', compound:true},
       ]},
       {name:'Triceps', ex:[
         {id:'mon_ohe', name:'Overhead extensions', sets:4, min:10, max:12, weight:'BB+10kg'},
       ]},
       {name:'Legs', ex:[
-        {id:'mon_bss', name:'Bulgarian split squats', sets:4, min:12, max:12, weight:'BW+WV4.6kg', compound:true},
-        {id:'mon_le', name:'Leg extensions', sets:4, min:12, max:12, weight:'45kg'},
+        {id:'mon_bss', name:'Bulgarian split squats', sets:4, min:10, max:12, weight:'BW+WV4.6kg', compound:true},
+        {id:'mon_le', name:'Leg extensions', sets:4, min:12, max:15, weight:'45kg'},
         {id:'mon_cr', name:'Calf raises', sets:3, min:15, max:20, weight:'BW+WV4.6kg'},
       ]},
     ]
@@ -744,18 +818,18 @@ const DAYS = [
       {name:'Back & traps', ex:[
         {id:'wed_pu', name:'Pull-ups', sets:5, min:6, max:8, weight:'BW + belt', compound:true},
         {id:'wed_cu', name:'Chin-ups', sets:4, min:8, max:8, weight:'BW + belt', compound:true},
-        {id:'wed_awg', name:'Australian pull-ups WG', sets:4, min:8, max:10, weight:'BW + vest'},
-        {id:'wed_acg', name:'Australian pull-ups CG', sets:4, min:8, max:10, weight:'BW + vest'},
-        {id:'wed_cp', name:'Chest pulls', sets:4, min:10, max:10, weight:'BB+20kg'},
+        {id:'wed_awg', name:'Australian pull-ups WG', sets:4, min:8, max:10, weight:'BW + vest', compound:true},
+        {id:'wed_acg', name:'Australian pull-ups CG', sets:4, min:8, max:10, weight:'BW + vest', compound:true},
+        {id:'wed_cp', name:'Chest pulls', sets:4, min:10, max:12, weight:'BB+20kg', compound:true},
         {id:'wed_sh', name:'Shoulder shrugs', sets:4, min:12, max:15, weight:'Barbell'},
       ]},
       {name:'Biceps', ex:[
         {id:'wed_bc', name:'Bicep curls', sets:4, min:8, max:10, weight:'BB+20kg'},
-        {id:'wed_kb', name:'KB bicep curls', sets:4, min:15, max:15, weight:'14kg'},
+        {id:'wed_kb', name:'KB bicep curls', sets:4, min:12, max:15, weight:'14kg'},
       ]},
       {name:'Legs', ex:[
-        {id:'wed_lp', name:'Single leg press', sets:4, min:10, max:10, weight:'45kg', compound:true},
-        {id:'wed_lc', name:'Leg curls', sets:4, min:10, max:10, weight:'17.5kg'},
+        {id:'wed_lp', name:'Single leg press', sets:4, min:8, max:10, weight:'45kg', compound:true},
+        {id:'wed_lc', name:'Leg curls', sets:4, min:10, max:12, weight:'17.5kg'},
       ]},
     ]
   },
@@ -767,13 +841,13 @@ const DAYS = [
         {id:'fri_cr', name:'Calf raises', sets:3, min:20, max:25, weight:'BW + weight'},
       ]},
       {name:'Back', ex:[
-        {id:'fri_acg', name:'Australian pull-ups CG', sets:4, min:10, max:12, weight:'BW + vest'},
-        {id:'fri_pp', name:'Plate chest pulls', sets:4, min:15, max:15, weight:'10kg'},
+        {id:'fri_acg', name:'Australian pull-ups CG', sets:4, min:10, max:12, weight:'BW + vest', compound:true},
+        {id:'fri_pp', name:'Plate chest pulls', sets:4, min:12, max:15, weight:'10kg', compound:true},
       ]},
       {name:'Chest & triceps', ex:[
         {id:'fri_d', name:'Dips', sets:4, min:8, max:10, weight:'BW + vest'},
-        {id:'fri_dp', name:'Diamond push-ups', sets:4, min:12, max:12, weight:'BW'},
-        {id:'fri_wp', name:'Wide push-ups', sets:4, min:15, max:15, weight:'BW'},
+        {id:'fri_dp', name:'Diamond push-ups', sets:4, min:12, max:15, weight:'BW', compound:true},
+        {id:'fri_wp', name:'Wide push-ups', sets:4, min:15, max:20, weight:'BW', compound:true},
         {id:'fri_bo', name:'Push-up burnout', sets:1, min:40, max:40, weight:'BW'},
       ]},
     ]
@@ -781,8 +855,8 @@ const DAYS = [
   {
     id:'sat', label:'Sat', full:'Saturday', sub:'Upper body & core', jsDay:6,
     groups:[
-      {name:'Biceps', ex:[{id:'sat_bc', name:'Bicep curls', sets:5, min:6, max:8, weight:'BB+20kg', compound:true}]},
-      {name:'Back', ex:[{id:'sat_cp', name:'Chest pulls', sets:4, min:8, max:10, weight:'BB+20kg'}]},
+      {name:'Biceps', ex:[{id:'sat_bc', name:'Bicep curls', sets:5, min:6, max:8, weight:'BB+20kg'}]},
+      {name:'Back', ex:[{id:'sat_cp', name:'Chest pulls', sets:4, min:8, max:10, weight:'BB+20kg', compound:true}]},
       {name:'Shoulders', ex:[{id:'sat_sp', name:'Shoulder press', sets:4, min:8, max:10, weight:'BB+20kg', compound:true}]},
       {name:'Triceps', ex:[{id:'sat_ohe', name:'Overhead extensions', sets:4, min:8, max:10, weight:'BB+20kg'}]},
       {name:'Core', ex:[
@@ -792,7 +866,7 @@ const DAYS = [
         {id:'sat_dr', name:'Dragonfly', sets:3, min:3, max:3, weight:'BW'},
         {id:'sat_spl', name:'Side plank', sets:3, min:1, max:1, weight:'1 min', timed:true},
       ]},
-      {name:'Obliques', ex:[{id:'sat_sb', name:'Dumbbell side bend', sets:4, min:15, max:15, weight:'15kg'}]},
+      {name:'Obliques', ex:[{id:'sat_sb', name:'Dumbbell side bend', sets:4, min:12, max:15, weight:'15kg'}]},
     ]
   },
 ];
@@ -805,8 +879,8 @@ function allEx() {
   return a;
 }
 
-function ld() { try { return JSON.parse(localStorage.getItem('prog_v7') || '{}'); } catch(e) { return {}; } }
-function sv(s) { try { localStorage.setItem('prog_v7', JSON.stringify(s)); } catch(e) {} }
+function ld() { try { return JSON.parse(localStorage.getItem('prog_v8') || '{}'); } catch(e) { return {}; } }
+function sv(s) { try { localStorage.setItem('prog_v8', JSON.stringify(s)); } catch(e) {} }
 
 let S = ld();
 if (!S.ex) S.ex = {};
@@ -815,6 +889,7 @@ if (!S.upg) S.upg = 0;
 if (!S.completed) S.completed = {};
 if (!S.skipped) S.skipped = {};
 if (!S.sessionCount) S.sessionCount = {};
+if (!S.hold) S.hold = {};
 function todayStr(){return new Date().toISOString().slice(0,10);}
 function isDayDone(id){return S.completed[id]===todayStr();}
 allEx().forEach(e => { if (!S.ex[e.id]) S.ex[e.id] = { reps: e.min, weight: e.weight, flagged: false }; });
@@ -854,28 +929,38 @@ function sug(e) {
   return 'Suggested: +2.5 kg';
 }
 
+function nextRestDay() {
+  for (let i = 1; i <= 7; i++) {
+    const jsDay = (todayJS + i) % 7;
+    const isWorkout = DAYS.some(d => d.jsDay === jsDay);
+    if (!isWorkout) return DN[jsDay];
+  }
+  return '—';
+}
+
 function renderBanner() {
   const dot = document.getElementById('bdot');
   const txt = document.getElementById('btext');
   if (todayI > -1) {
     dot.className = 'banner-dot active';
-    txt.innerHTML = 'Today is <strong>' + DN[todayJS] + '</strong> — training day loaded';
+    txt.innerHTML = 'Today is your workout day · next rest day — <strong>' + nextRestDay() + '</strong>';
   } else {
     dot.className = 'banner-dot rest';
-    txt.innerHTML = '<strong>' + DN[todayJS] + '</strong> is a rest day · Next: <strong>' + DAYS[nextI()].full + '</strong>';
+    txt.innerHTML = 'Today is your rest day · next workout: <strong>' + DAYS[nextI()].full + '</strong>';
   }
 }
 
 function renderTabs() {
   const c = document.getElementById('tabs');
   c.innerHTML = '';
+  c.style.gridTemplateColumns = 'repeat(' + DAYS.length + ', 1fr)';
   DAYS.forEach((d, i) => {
     const f = dayFlags(d.id);
     const isToday = d.jsDay === todayJS;
     const btn = document.createElement('button');
     btn.className = 'tab' + (i === cur ? ' active' : '') + (f > 0 ? ' flagged' : '');
     btn.innerHTML =
-      '<span class="tab-label">' + d.label + (f > 0 ? ' ⚑' : '') + '</span>' +
+      '<span class="tab-label">' + d.label + (f > 0 ? ' <span class="tab-flag">⚑</span>' : '') + '</span>' +
       '<span class="tab-sub">' + d.sub + '</span>' +
       (isToday ? '<div class="tab-pip"></div>' : '');
     btn.onclick = () => { cur = i; renderSession(); renderTabs(); };
@@ -917,16 +1002,19 @@ function renderSession() {
         : '';
 
       const guidePill = (!xd.flagged && isWeightUnset(ex, xd) && !isTimed)
-        ? `<span class="pill pill-guide" onclick="openRIRGuide('${ex.id}')">▸ Starting guide</span>`
+        ? `<span class="pill pill-guide" onclick="openRIRGuide('${ex.id}')">▸ Start guide</span>`
         : '';
 
-      const bar = (!isTimed && !isFixed)
-        ? `<div class="prog"><div class="prog-track"><div class="prog-fill" style="width:${pct}%"></div></div><span class="prog-pct">${pct}%</span></div>`
+      const bar = '';
+
+      const held = S.hold && S.hold[ex.id];
+      const holdPill = (!isTimed && cInfo && cInfo.type !== 'finisher')
+        ? `<span class="pill pill-hold${held ? ' on' : ''}" onclick="toggleHold('${ex.id}')">${held ? '✓ Holding' : 'Couldn’t finish'}</span>`
         : '';
 
       row.innerHTML = `
-        <div class="ex-info">
-          <div class="ex-name">${ex.name}</div>
+        <div class="ex-info" onclick="openHowTo('${ex.id}')" style="cursor:pointer;">
+          <div class="ex-name">${ex.name} <span class="info-dot">ⓘ</span></div>
           <div class="ex-pills">
             ${repPill}
           </div>
@@ -936,6 +1024,7 @@ function renderSession() {
           <div class="prog-row">
             ${xd.flagged ? flagPill : ''}
             ${guidePill}
+            ${holdPill}
             ${bar}
           </div>
         </div>`;
@@ -946,8 +1035,10 @@ function renderSession() {
 
 function updateStats() {
   document.getElementById('s-sess').textContent = S.sess;
-  document.getElementById('s-upg').textContent = S.upg;
-  document.getElementById('s-flags').textContent = totFlags();
+  const f = totFlags();
+  document.getElementById('s-flags').textContent = f;
+  const num = document.getElementById('s-flags');
+  if (f > 0) num.classList.add('amber'); else num.classList.remove('amber');
 }
 
 function updateDoneBtn() {
@@ -981,6 +1072,8 @@ function complete() {
     const c = COACHING[ex.id];
     const xd = S.ex[ex.id];
     if (!c || c.type === 'finisher' || c.type === 'timed') return;
+    // "Couldn't finish" — hold this exercise where it is, don't progress
+    if (S.hold && S.hold[ex.id]) { delete S.hold[ex.id]; return; }
     if (c.type === 'weighted' || c.type === 'vest') {
       if (ex.min !== ex.max && !xd.flagged) {
         xd.reps = Math.min(xd.reps + 1, ex.max);
@@ -1064,6 +1157,31 @@ function getCoachStep(id) {
   return c.steps[idx];
 }
 
+function toggleHold(id) {
+  if (!S.hold) S.hold = {};
+  if (S.hold[id]) delete S.hold[id];
+  else S.hold[id] = true;
+  sv(S);
+  renderSession();
+}
+
+function openHowTo(id) {
+  const ex = allEx().find(e => e.id === id);
+  const d = DESCRIPTIONS[id];
+  mTarget = id;
+  document.getElementById('m-name').textContent = ex.name;
+  document.getElementById('m-badge').textContent = 'How to perform';
+  document.getElementById('m-badge').className = 'modal-badge howto';
+  document.getElementById('m-desc').textContent = d ? d.how : '';
+  document.getElementById('m-hint').innerHTML = d && d.cues
+    ? d.cues.map(c => '• ' + c).join('<br>')
+    : '';
+  document.getElementById('m-weight-section').style.display = 'none';
+  document.getElementById('m-confirm').style.display = 'none';
+  document.querySelector('#overlay .btn-ghost').textContent = 'Close';
+  document.getElementById('overlay').classList.add('open');
+}
+
 function isWeightUnset(ex, xd) {
   return !xd.weightSet;
 }
@@ -1085,18 +1203,27 @@ function openRIRGuide(id) {
   const isCompound = !!ex.compound;
   const rir = isCompound ? '2–3' : '4–5';
   const typeLabel = isCompound ? 'compound lift' : 'isolation exercise';
+  const wLower = (xd.weight || '').toLowerCase();
+  const hasAddedWeight = /\d\s*kg|\bbar\b|\bplate\b|\bvest\b|\bbelt\b|\bbb\b/.test(wLower);
+  const isBodyweight = !hasAddedWeight && /\bbw\b|bodyweight|body weight|^$/.test(wLower);
 
   document.getElementById('m-name').textContent = ex.name;
-  document.getElementById('m-badge').textContent = 'Starting guide';
+  document.getElementById('m-badge').textContent = 'Start guide';
   document.getElementById('m-badge').className = 'modal-badge guide';
-  document.getElementById('m-desc').textContent = 'This is a ' + typeLabel + ' — pick a weight where you can hit ' + ex.min + ' reps (your minimum) with ' + rir + ' reps still left in the tank.';
-  document.getElementById('m-hint').textContent = isCompound
-    ? 'Compounds need heavier load — err on the side of challenging yourself.'
-    : 'Isolation work fatigues fast — start conservative and build up.';
+  document.getElementById('m-desc').textContent = isBodyweight
+    ? 'Aim for ' + ex.min + ' clean reps (your minimum) with ' + rir + ' still left in the tank. Once that’s easy, add load or a harder variation.'
+    : 'This is a ' + typeLabel + ' — pick a weight where you can hit ' + ex.min + ' reps (your minimum) with ' + rir + ' reps still left in the tank.';
+  document.getElementById('m-hint').textContent = isBodyweight
+    ? 'Progress by reps first, then add weight (vest/belt/plate) or a harder variation.'
+    : (isCompound
+      ? 'Compounds need heavier load — err on the side of challenging yourself.'
+      : 'Isolation work fatigues fast — start conservative and build up.');
   document.getElementById('m-weight-section').style.display = 'block';
+  document.getElementById('m-confirm').style.display = '';
+  document.querySelector('#overlay .btn-ghost').textContent = 'Later';
   document.getElementById('m-confirm').textContent = 'Set weight';
   document.getElementById('m-input').value = '';
-  document.getElementById('m-input').placeholder = 'e.g. ' + ex.weight;
+  document.getElementById('m-input').placeholder = 'e.g. ' + (xd.weight || ex.weight);
   document.getElementById('overlay').classList.add('open');
 }
 
@@ -1112,11 +1239,13 @@ function openModal(id) {
 
   const ws = document.getElementById('m-weight-section');
   const confirmBtn = document.getElementById('m-confirm');
+  confirmBtn.style.display = '';
 
   if (!c || c.type === 'weighted' || c.type === 'vest') {
     // Show weight input
     ws.style.display = 'block';
     confirmBtn.textContent = 'Update weight';
+    document.querySelector('#overlay .btn-ghost').textContent = 'Later';
     if (c && c.type === 'vest') {
       document.getElementById('m-desc').textContent = 'You have completed enough sessions at this load. Time to add more vest weight.';
       document.getElementById('m-hint').textContent = c.suggest;
@@ -1130,8 +1259,10 @@ function openModal(id) {
   } else {
     // Coaching only — no weight input
     ws.style.display = 'none';
-    confirmBtn.textContent = 'Got it';
     const step = getCoachStep(id);
+    confirmBtn.style.display = '';
+    confirmBtn.textContent = 'Move up';
+    document.querySelector('#overlay .btn-ghost').textContent = 'Later';
     if (c.type === 'tempo') {
       document.getElementById('m-desc').textContent = 'Your body has adapted — the weight stays the same but the exercise gets harder.';
     } else if (c.type === 'timed') {
