@@ -430,6 +430,7 @@ body {
 }
 
 .weight-input:focus { border-color: var(--accent); }
+.weight-input::placeholder { color: var(--text3); font-weight: 500; opacity: 0.6; }
 
 .prog {
   display: flex;
@@ -689,184 +690,104 @@ body {
 // COACHING PROFILES — every exercise has a type and progression path
 // EXERCISE DESCRIPTIONS — concise how-to + key cues
 const DESCRIPTIONS = {
-  // MONDAY — Push & legs
-  'mon_dips':  {how:'Weighted dips on the bars, vest on. Lower until shoulders are just below elbows, then press up.', cues:['Lean forward for chest, upright for triceps','Elbows back, not flared','Full lockout at the top']},
-  'mon_par':   {how:'Push-ups on the parallettes for a deeper range, vest on.', cues:['Lower past hand level for the extra stretch','Body in a straight line, brace the core','Control the descent']},
-  'mon_dec':   {how:'Feet elevated, hands on the floor. Lower chest, press back up.', cues:['Higher feet = harder','Elbows ~45°','Full range, chest to floor']},
-  'mon_sp':    {how:'Barbell overhead press from shoulders to lockout.', cues:['Brace, ribs down, no lean back','Bar finishes over the crown','Full lockout']},
-  'mon_pike':  {how:'Hips high in an inverted V, lower the crown of your head toward the floor, press back up.', cues:['Hips stacked over shoulders','Lower under control','Press to full lockout']},
-  'mon_ohe':   {how:'Overhead triceps extension with the barbell, elbows high.', cues:['Elbows stay pointing forward','Stretch at the bottom','Only the forearms move']},
-  'mon_bss':   {how:'Rear foot on a bench, lower the back knee, drive up through the front foot.', cues:['Front shin near vertical','Drop straight down','Through the whole front foot']},
-  'mon_le':    {how:'Leg extension machine, straighten the legs, squeeze, lower slow.', cues:['Squeeze the quads at the top','Slow negative','Full range']},
-  'mon_cr':    {how:'Standing calf raise, full stretch at the bottom to full height at the top.', cues:['All the way up and down','Pause at the top','Add load via vest/held plate']},
+  // MONDAY — Pull
+  'mon_pu_h': {how:'Weighted pull-ups on the belt, palms away. Heavy low-rep sets — dead hang to chin over the bar, control down.', cues:['Full hang start, shoulders set','Drive elbows down to your hips','Control the lowering'], rest:'2–3 min'},
+  'mon_pu_p': {how:'Bodyweight pull-ups, max reps — chase the pump. Log the reps you hit and try to beat it next time.', cues:['Clean reps, full range','Stop a rep short of total failure','Beat last session’s number'], rest:'45–60 sec'},
+  'mon_cu':   {how:'Chin-ups with the belt, palms toward you — heavy, biceps and lats.', cues:['Elbows tucked','Squeeze at the top','Slow negative'], rest:'2–3 min'},
+  'mon_ap':   {how:'Australian pull-ups under the bar, body straight, max reps for the mid-back/rear-delt pump.', cues:['Body in one straight line','Pull chest to the bar','Squeeze shoulder blades'], rest:'45–60 sec'},
+  'mon_bc':   {how:'EZ-bar curls, elbows at your sides — biceps.', cues:['No swinging, elbows pinned','Full stretch at the bottom','Squeeze at the top'], rest:'60–90 sec'},
 
-  // WEDNESDAY — Pull & legs
-  'wed_pu':    {how:'Pull-ups with the weight belt, palms away. Dead hang to chin over bar.', cues:['Full hang start, shoulders set','Drive elbows down','Control the descent']},
-  'wed_cu':    {how:'Chin-ups with the belt, palms toward you.', cues:['Elbows tucked','Squeeze at the top','Slow negative']},
-  'wed_awg':   {how:'Wide-grip Australian pull-ups under the bar, body straight.', cues:['Straight line, like a moving plank','Pull chest to bar','Squeeze shoulder blades']},
-  'wed_acg':   {how:'Close-grip Australian pull-ups under the bar, body straight.', cues:['Body straight','Elbows close','Chest to bar']},
-  'wed_cp':    {how:'Barbell chest pull / row movement, pull to the torso.', cues:['Lead with the elbows','Squeeze the back','Control back out']},
-  'wed_sh':    {how:'Barbell shrugs — lift the shoulders straight up, squeeze, lower.', cues:['Straight up, not rolling','Squeeze at the top','Full lower for the stretch']},
-  'wed_bc':    {how:'Barbell biceps curl, elbows at your sides.', cues:['No swinging','Elbows pinned','Full stretch at the bottom']},
-  'wed_kb':    {how:'Kettlebell biceps curls.', cues:['Controlled, no swing','Squeeze at the top','Full range']},
-  'wed_lp':    {how:'Single-leg press, lower under control to ~90°, press without locking hard.', cues:['Whole foot pressing','Knee tracks over toes','Back flat on the pad']},
-  'wed_lc':    {how:'Leg curl machine, heels to glutes, squeeze, lower slow.', cues:['Hips down','Squeeze at the top','Slow negative']},
+  // WEDNESDAY — Push
+  'wed_dip_h':{how:'Weighted dips on the belt. Heavy low-rep — lower until shoulders are just below elbows, press up.', cues:['Lean forward for chest, upright for triceps','Elbows back, not flared','Full lockout'], rest:'2–3 min'},
+  'wed_dip_p':{how:'Bodyweight dips, max reps — chase the pump. Log your reps and beat it next time.', cues:['Clean reps, full range','Stop a rep short of failure','Beat last session’s number'], rest:'45–60 sec'},
+  'wed_sp':   {how:'EZ-bar overhead press, shoulders to lockout — the pressing dips miss.', cues:['Brace, ribs down, no lean back','Bar finishes over your head','Full lockout'], rest:'2–3 min'},
+  'wed_dp':   {how:'Diamond push-ups, hands together under the chest — max reps, triceps and inner chest.', cues:['Hands form a diamond','Elbows tight to the body','Full range'], rest:'45–60 sec'},
+  'wed_lr':   {how:'Lateral raises, a plate in each hand — side delts for width.', cues:['Lead with the elbows','Only to shoulder height','Lower slow, no swinging'], rest:'60–90 sec'},
 
-  // FRIDAY — Legs & conditioning
-  'fri_bss':   {how:'Rear foot on a bench, lower the back knee, drive up through the front foot.', cues:['Front shin near vertical','Drop straight down','Through the whole front foot']},
-  'fri_cr':    {how:'Standing calf raise, full range, pause at the top.', cues:['All the way up and down','Pause at the top','Add load to progress']},
-  'fri_acg':   {how:'Close-grip Australian pull-ups under the bar.', cues:['Body straight','Elbows close','Chest to bar']},
-  'fri_pp':    {how:'Plate chest pull / front raise hold with the plate.', cues:['Controlled throughout','Brace the core','No swinging']},
-  'fri_d':     {how:'Dips on the bars, vest on.', cues:['Lean forward for chest','Elbows back','Full lockout']},
-  'fri_dp':    {how:'Diamond push-ups — hands together under the chest.', cues:['Hands form a diamond','Elbows tight to the body','Full range']},
-  'fri_wp':    {how:'Wide push-ups — hands wider than shoulders.', cues:['Wide hands, chest stretch','Body in a line','Full depth']},
-  'fri_bo':    {how:'Push-up burnout — max clean reps to finish.', cues:['Keep form clean as you fatigue','Stop when form breaks','Empty the tank']},
+  // FRIDAY — Legs
+  'fri_bss_h':{how:'Bulgarian split squats holding plates — heavy low-rep. Rear foot on a bench, lower the back knee, drive up.', cues:['Front shin near vertical','Drop straight down','Through the whole front foot'], rest:'2–3 min'},
+  'fri_bss_p':{how:'Bodyweight Bulgarian split squats, max reps — quad and glute pump.', cues:['Controlled tempo','Full depth','Beat last session’s number'], rest:'45–60 sec'},
+  'fri_rdl':  {how:'EZ-bar Romanian deadlift — hips back, bar down the legs, flat back, feel the hamstring stretch, drive hips forward.', cues:['Hinge at the hips, not the back','Soft knees, bar close to legs','Squeeze glutes to stand'], rest:'2–3 min'},
+  'fri_le':   {how:'Leg extensions — straighten the legs, squeeze, lower slow.', cues:['Squeeze the quads at the top','Slow negative','Full range'], rest:'60–90 sec'},
+  'fri_cr':   {how:'Standing calf raises, max reps, full range.', cues:['All the way up and down','Pause at the top','Beat last session’s number'], rest:'45–60 sec'},
 
-  // SATURDAY — Upper body & core
-  'sat_bc':    {how:'Barbell biceps curl, elbows at your sides.', cues:['No swinging','Elbows pinned','Full stretch']},
-  'sat_cp':    {how:'Barbell chest pull / row, pull to torso.', cues:['Lead with elbows','Squeeze the back','Control out']},
-  'sat_sp':    {how:'Barbell overhead press, shoulders to lockout.', cues:['Brace, no lean back','Bar over the crown','Full lockout']},
-  'sat_ohe':   {how:'Overhead triceps extension with the barbell.', cues:['Elbows forward','Stretch at the bottom','Forearms only']},
-  'sat_pl':    {how:'Plank — straight line head to heels, brace hard.', cues:['Squeeze glutes and abs','No hip sag','Breathe steadily']},
-  'sat_db':    {how:'Dead bug — opposite arm and leg extend, back flat.', cues:['Lower back pressed down','Breathe out as you extend','Slow and controlled']},
-  'sat_hr':    {how:'Hollow rocks — lower back glued to the floor, rock gently.', cues:['Keep the lower back down','Small controlled rocks','Tight hollow shape']},
-  'sat_dr':    {how:'Dragonfly — lower the body as one straight line, control the descent.', cues:['Whole body rigid','Slow descent','Pull back up tight']},
-  'sat_spl':   {how:'Side plank — straight line, hips up.', cues:['Stack the hips','Don’t let the hip drop','Brace the obliques']},
-  'sat_sb':    {how:'Standing dumbbell side bend, bend to the side and back up.', cues:['Bend only sideways','Controlled, no twisting','Feel the obliques']},
+  // SATURDAY — Kettlebell
+  'sat_sw':   {how:'Swing, elbow pull, snatch combo — explosive hip drive, light and rhythmic.', cues:['Power from the hips, not the arms','Smooth and rhythmic','Keep it moderate'], rest:'as needed'},
+  'sat_pr':   {how:'Kettlebell press — clean to the shoulder, press overhead.', cues:['Brace the core','Press straight up','Control down'], rest:'as needed'},
+  'sat_halo': {how:'Halo — circle the bell around your head, controlled.', cues:['Tight circles','Brace the core','Slow and controlled'], rest:'as needed'},
+  'sat_wm':   {how:'Windmill — bell overhead, hinge to the side, eyes on the bell.', cues:['Eyes on the bell','Hinge, don’t bend the back','Controlled both ways'], rest:'as needed'},
+  'sat_tgu':  {how:'Turkish get-up — from lying down, press the bell overhead and stand up keeping the arm locked out, then reverse it back down. Slow and deliberate, one side at a time.', cues:['Eyes on the bell the whole time','Keep the arm locked straight overhead','Move slow — control every stage'], rest:'as needed'},
+
+  'sat_fc':   {how:'Front curl — both hands on the bell, curl up.', cues:['Elbows in','No swinging','Squeeze at the top'], rest:'as needed'},
+  'sat_te':   {how:'Tricep extension into side crunch superset — overhead extension, then side crunches.', cues:['Elbows forward on the extension','Controlled crunch','Keep it moderate — recovery day'], rest:'as needed'},
 };
 
 const COACHING = {
-  // WEIGHTED — flag after rep max hit, suggest weight increase
-  'mon_dips':  {type:'weighted', suggest:'+2.5kg on vest', flag:'Weight increase', sessions:0},
-  'mon_par':   {type:'vest',     suggest:'Add 2.3kg plate to vest', flag:'Vest load up', sessions:4},
-  'mon_dec':   {type:'tempo',    flag:'Tempo progression',
-    steps:['Slow it down — 3s down, 1s pause, 1s up','Push the tempo — 4s down, 2s pause, 1s up','Try decline diamond push-ups for added difficulty','Add vest 2.3kg and reset to 3s tempo']},
-  'mon_sp':    {type:'weighted', suggest:'+5kg', flag:'Weight increase', sessions:0},
-  'mon_pike':  {type:'tempo',    flag:'Tempo progression',
-    steps:['Slow tempo — 3s down, 2s hold at top, 1s up','4s down, 3s hold — really feel the shoulders','Progress to wall handstand push-up negatives','Full wall handstand push-up — you are ready']},
-  'mon_ohe':   {type:'weighted', suggest:'+2.5kg', flag:'Weight increase', sessions:0},
-  'mon_bss':   {type:'weighted', suggest:'+2.3kg vest plate', flag:'Load increase', sessions:0},
-  'mon_le':    {type:'weighted', suggest:'+5kg on machine', flag:'Weight increase', sessions:0},
-  'mon_cr':    {type:'weighted', suggest:'+2.3kg vest plate', flag:'Load increase', sessions:0},
+  // MONDAY — Pull
+  'mon_pu_h': {type:'weighted', suggest:'Add 2.5kg to the belt once you hit 6 reps on both sets', flag:'Weight increase', sessions:0},
+  'mon_cu':   {type:'weighted', suggest:'Add 2.5kg to the belt once you hit 8 reps', flag:'Weight increase', sessions:0},
+  'mon_bc':   {type:'weighted', suggest:'Add 2.5kg to the EZ bar once you hit 15 reps clean', flag:'Weight increase', sessions:0},
 
-  'wed_pu':    {type:'weighted', suggest:'+2.5kg weight belt', flag:'Weight increase', sessions:0},
-  'wed_cu':    {type:'weighted', suggest:'+2.5kg weight belt', flag:'Weight increase', sessions:0},
-  'wed_awg':   {type:'vest',     suggest:'Add 2.3kg plate to vest', flag:'Vest load up', sessions:4},
-  'wed_acg':   {type:'vest',     suggest:'Add 2.3kg plate to vest', flag:'Vest load up', sessions:4},
-  'wed_cp':    {type:'weighted', suggest:'+2.5kg', flag:'Weight increase', sessions:0},
-  'wed_sh':    {type:'weighted', suggest:'+5kg on barbell', flag:'Weight increase', sessions:0},
-  'wed_bc':    {type:'weighted', suggest:'+2.5kg', flag:'Weight increase', sessions:0},
-  'wed_kb':    {type:'tempo',    flag:'Tempo progression',
-    steps:['Slow curls — 3s up, 2s squeeze, 3s down','4s up, 3s squeeze, 4s down — feel the burn','Try 21s: 7 bottom half, 7 top half, 7 full reps','Go heavier KB or switch to barbell curls']},
-  'wed_lp':    {type:'weighted', suggest:'+5kg on machine', flag:'Weight increase', sessions:0},
-  'wed_lc':    {type:'weighted', suggest:'+2.5kg', flag:'Weight increase', sessions:0},
+  // WEDNESDAY — Push
+  'wed_dip_h':{type:'weighted', suggest:'Add to the belt once you hit 6 reps on both sets', flag:'Weight increase', sessions:0},
+  'wed_sp':   {type:'weighted', suggest:'Add 2.5kg to the EZ bar once all 4 sets of 5 feel solid', flag:'Weight increase', sessions:0},
+  'wed_lr':   {type:'weighted', suggest:'Add a touch once 20 reps feels easy with clean form', flag:'Weight increase', sessions:0},
 
-  'fri_bss':   {type:'weighted', suggest:'+2.3kg vest plate', flag:'Load increase', sessions:0},
-  'fri_cr':    {type:'weighted', suggest:'+2.3kg vest plate', flag:'Load increase', sessions:0},
-  'fri_acg':   {type:'vest',     suggest:'Add 2.3kg plate to vest', flag:'Vest load up', sessions:4},
-  'fri_pp':    {type:'weighted', suggest:'+2.5kg plate', flag:'Weight increase', sessions:0},
-  'fri_d':     {type:'vest',     suggest:'Add 2.3kg plate to vest', flag:'Vest load up', sessions:4},
-  'fri_dp':    {type:'tempo',    flag:'Tempo progression',
-    steps:['Slow it — 3s down, 1s pause at chest, 1s up','4s down, 2s pause — really squeeze the triceps','Try archer diamond variation for extra difficulty','Add vest 2.3kg and reset tempo to 3s']},
-  'fri_wp':    {type:'tempo',    flag:'Tempo progression',
-    steps:['Slow tempo — 3s down, 1s pause, 1s up','4s down, 2s pause — feel the chest stretch','Try archer push-ups — one arm extended each side','Add vest 2.3kg and return to normal tempo']},
-  'fri_bo':    {type:'finisher', flag:''},
-
-  'sat_bc':    {type:'weighted', suggest:'+2.5kg', flag:'Weight increase', sessions:0},
-  'sat_cp':    {type:'weighted', suggest:'+2.5kg', flag:'Weight increase', sessions:0},
-  'sat_sp':    {type:'weighted', suggest:'+5kg', flag:'Weight increase', sessions:0},
-  'sat_ohe':   {type:'weighted', suggest:'+2.5kg', flag:'Weight increase', sessions:0},
-  'sat_pl':    {type:'timed',    flag:'Time progression',
-    steps:['Hit 75 seconds — 15s extra on each set','Push to 90 seconds per set','Try 2 minutes — elite level','Add weight plate on back for weighted plank']},
-  'sat_db':    {type:'timed',    flag:'Form progression',
-    steps:['Perfect the form — arms fully extended, controlled','Add 10s per set — increase time under tension','Try single leg deadbug for extra core challenge','Add a light dumbbell in each hand']},
-  'sat_hr':    {type:'timed',    flag:'Time progression',
-    steps:['Increase to 45 seconds per set','Push to 60 seconds — full minute hollow hold','Try slower rocking — more control, harder','Add a small weight between feet']},
-  'sat_dr':    {type:'tempo',    flag:'Rep progression',
-    steps:['Control the descent — 4s down, pause, pull back up','Work up to 4 reps per set','Push to 5 reps — elite territory','Slow descent to 5s — brutal']},
-  'sat_spl':   {type:'timed',    flag:'Time progression',
-    steps:['Push to 75 seconds each side','90 seconds per side — strong obliques','2 minutes per side — exceptional','Add weight plate on hip for loaded side plank']},
-  'sat_sb':    {type:'weighted', suggest:'+2.5kg dumbbell', flag:'Weight increase', sessions:0},
+  // FRIDAY — Legs
+  'fri_bss_h':{type:'weighted', suggest:'Hold heavier plates once you hit 8 reps on both sets', flag:'Weight increase', sessions:0},
+  'fri_rdl':  {type:'weighted', suggest:'Add 2.5–5kg to the EZ bar once 8 reps feels strong', flag:'Weight increase', sessions:0},
+  'fri_le':   {type:'weighted', suggest:'Add weight once you hit 20 reps with control', flag:'Weight increase', sessions:0},
 };
 
 const DAYS = [
   {
-    id:'mon', label:'Mon', full:'Monday', sub:'Push & legs', jsDay:1,
+    id:'mon', label:'Mon', full:'Monday', sub:'Pull', jsDay:1,
     groups:[
-      {name:'Chest', ex:[
-        {id:'mon_dips', name:'Weighted dips', sets:5, min:6, max:8, weight:'BW + vest', compound:true},
-        {id:'mon_par', name:'Parallets push-ups', sets:4, min:8, max:10, weight:'BW + vest', compound:true},
-        {id:'mon_dec', name:'Decline push-ups', sets:3, min:12, max:15, weight:'BW', compound:true},
-      ]},
-      {name:'Shoulders', ex:[
-        {id:'mon_sp', name:'Shoulder press', sets:4, min:6, max:8, weight:'BB+20kg', compound:true},
-        {id:'mon_pike', name:'Pike push-ups', sets:4, min:10, max:12, weight:'BW', compound:true},
-      ]},
-      {name:'Triceps', ex:[
-        {id:'mon_ohe', name:'Overhead extensions', sets:4, min:10, max:12, weight:'BB+10kg'},
-      ]},
-      {name:'Legs', ex:[
-        {id:'mon_bss', name:'Bulgarian split squats', sets:4, min:10, max:12, weight:'BW+WV4.6kg', compound:true},
-        {id:'mon_le', name:'Leg extensions', sets:4, min:12, max:15, weight:'45kg'},
-        {id:'mon_cr', name:'Calf raises', sets:3, min:15, max:20, weight:'BW+WV4.6kg'},
+      {name:'Back & biceps', ex:[
+        {id:'mon_pu_h', name:'Pull-ups — heavy', sets:2, min:4, max:6, weight:'', compound:true},
+        {id:'mon_pu_p', name:'Pull-ups — pump', sets:2, amrap:true, weight:'', compound:true},
+        {id:'mon_cu', name:'Chin-ups', sets:3, min:6, max:8, weight:'', compound:true},
+        {id:'mon_ap', name:'Australian pull-ups', sets:3, amrap:true, weight:'', compound:true},
+        {id:'mon_bc', name:'EZ-bar curls', sets:3, min:12, max:15, weight:''},
       ]},
     ]
   },
   {
-    id:'wed', label:'Wed', full:'Wednesday', sub:'Pull & legs', jsDay:3,
+    id:'wed', label:'Wed', full:'Wednesday', sub:'Push', jsDay:3,
     groups:[
-      {name:'Back & traps', ex:[
-        {id:'wed_pu', name:'Pull-ups', sets:5, min:6, max:8, weight:'BW + belt', compound:true},
-        {id:'wed_cu', name:'Chin-ups', sets:4, min:8, max:8, weight:'BW + belt', compound:true},
-        {id:'wed_awg', name:'Australian pull-ups WG', sets:4, min:8, max:10, weight:'BW + vest', compound:true},
-        {id:'wed_acg', name:'Australian pull-ups CG', sets:4, min:8, max:10, weight:'BW + vest', compound:true},
-        {id:'wed_cp', name:'Chest pulls', sets:4, min:10, max:12, weight:'BB+20kg', compound:true},
-        {id:'wed_sh', name:'Shoulder shrugs', sets:4, min:12, max:15, weight:'Barbell'},
-      ]},
-      {name:'Biceps', ex:[
-        {id:'wed_bc', name:'Bicep curls', sets:4, min:8, max:10, weight:'BB+20kg'},
-        {id:'wed_kb', name:'KB bicep curls', sets:4, min:12, max:15, weight:'14kg'},
-      ]},
-      {name:'Legs', ex:[
-        {id:'wed_lp', name:'Single leg press', sets:4, min:8, max:10, weight:'45kg', compound:true},
-        {id:'wed_lc', name:'Leg curls', sets:4, min:10, max:12, weight:'17.5kg'},
+      {name:'Chest, shoulders & triceps', ex:[
+        {id:'wed_dip_h', name:'Dips — heavy', sets:2, min:4, max:6, weight:'', compound:true},
+        {id:'wed_dip_p', name:'Dips — pump', sets:2, amrap:true, weight:'', compound:true},
+        {id:'wed_sp', name:'Overhead press', sets:4, min:5, max:5, weight:'', compound:true},
+        {id:'wed_dp', name:'Diamond push-ups', sets:3, amrap:true, weight:'', compound:true},
+        {id:'wed_lr', name:'Lateral raises', sets:3, min:15, max:20, weight:''},
       ]},
     ]
   },
   {
-    id:'fri', label:'Fri', full:'Friday', sub:'Legs & conditioning', jsDay:5,
+    id:'fri', label:'Fri', full:'Friday', sub:'Legs', jsDay:5,
     groups:[
-      {name:'Legs', ex:[
-        {id:'fri_bss', name:'Bulgarian split squats', sets:4, min:8, max:10, weight:'BW + weight', compound:true},
-        {id:'fri_cr', name:'Calf raises', sets:3, min:20, max:25, weight:'BW + weight'},
-      ]},
-      {name:'Back', ex:[
-        {id:'fri_acg', name:'Australian pull-ups CG', sets:4, min:10, max:12, weight:'BW + vest', compound:true},
-        {id:'fri_pp', name:'Plate chest pulls', sets:4, min:12, max:15, weight:'10kg', compound:true},
-      ]},
-      {name:'Chest & triceps', ex:[
-        {id:'fri_d', name:'Dips', sets:4, min:8, max:10, weight:'BW + vest'},
-        {id:'fri_dp', name:'Diamond push-ups', sets:4, min:12, max:15, weight:'BW', compound:true},
-        {id:'fri_wp', name:'Wide push-ups', sets:4, min:15, max:20, weight:'BW', compound:true},
-        {id:'fri_bo', name:'Push-up burnout', sets:1, min:40, max:40, weight:'BW'},
+      {name:'Quads, hams & calves', ex:[
+        {id:'fri_bss_h', name:'Bulgarian split squats — heavy', sets:2, min:6, max:8, weight:'', compound:true},
+        {id:'fri_bss_p', name:'Bulgarian split squats — pump', sets:2, amrap:true, weight:'', compound:true},
+        {id:'fri_rdl', name:'Romanian deadlifts', sets:4, min:6, max:8, weight:'', compound:true},
+        {id:'fri_le', name:'Leg extensions', sets:3, min:15, max:20, weight:''},
+        {id:'fri_cr', name:'Calf raises', sets:3, amrap:true, weight:''},
       ]},
     ]
   },
   {
-    id:'sat', label:'Sat', full:'Saturday', sub:'Upper body & core', jsDay:6,
+    id:'sat', label:'Sat', full:'Saturday', sub:'Kettlebell', jsDay:6,
     groups:[
-      {name:'Biceps', ex:[{id:'sat_bc', name:'Bicep curls', sets:5, min:6, max:8, weight:'BB+20kg'}]},
-      {name:'Back', ex:[{id:'sat_cp', name:'Chest pulls', sets:4, min:8, max:10, weight:'BB+20kg', compound:true}]},
-      {name:'Shoulders', ex:[{id:'sat_sp', name:'Shoulder press', sets:4, min:8, max:10, weight:'BB+20kg', compound:true}]},
-      {name:'Triceps', ex:[{id:'sat_ohe', name:'Overhead extensions', sets:4, min:8, max:10, weight:'BB+20kg'}]},
-      {name:'Core', ex:[
-        {id:'sat_pl', name:'Plank', sets:3, min:1, max:1, weight:'1 min', timed:true},
-        {id:'sat_db', name:'Deadbug', sets:3, min:1, max:1, weight:'1 min', timed:true},
-        {id:'sat_hr', name:'Hollow rocks', sets:3, min:1, max:1, weight:'30 sec', timed:true},
-        {id:'sat_dr', name:'Dragonfly', sets:3, min:3, max:3, weight:'BW'},
-        {id:'sat_spl', name:'Side plank', sets:3, min:1, max:1, weight:'1 min', timed:true},
+      {name:'Kettlebell — active recovery', ex:[
+        {id:'sat_sw', name:'Swing / elbow pull / snatch', sets:3, min:5, max:5, weight:'14kg', kb:true},
+        {id:'sat_pr', name:'KB press', sets:3, min:10, max:10, weight:'14kg', kb:true},
+        {id:'sat_halo', name:'Halo', sets:2, min:20, max:20, weight:'14kg', kb:true},
+        {id:'sat_wm', name:'Windmill', sets:3, min:5, max:5, weight:'14kg', kb:true},
+        {id:'sat_tgu', name:'Turkish get-up (each side)', sets:2, min:5, max:5, weight:'14kg', kb:true},
+        {id:'sat_fc', name:'KB front curl', sets:3, min:25, max:25, weight:'14kg', kb:true},
+        {id:'sat_te', name:'KB tricep ext / side crunch superset', sets:3, min:25, max:25, weight:'14kg', kb:true},
       ]},
-      {name:'Obliques', ex:[{id:'sat_sb', name:'Dumbbell side bend', sets:4, min:12, max:15, weight:'15kg'}]},
     ]
   },
 ];
@@ -879,8 +800,8 @@ function allEx() {
   return a;
 }
 
-function ld() { try { return JSON.parse(localStorage.getItem('prog_v8') || '{}'); } catch(e) { return {}; } }
-function sv(s) { try { localStorage.setItem('prog_v8', JSON.stringify(s)); } catch(e) {} }
+function ld() { try { return JSON.parse(localStorage.getItem('prog_v10') || '{}'); } catch(e) { return {}; } }
+function sv(s) { try { localStorage.setItem('prog_v10', JSON.stringify(s)); } catch(e) {} }
 
 let S = ld();
 if (!S.ex) S.ex = {};
@@ -985,32 +906,47 @@ function renderSession() {
     g.ex.forEach(ex => {
       const xd = S.ex[ex.id];
       const isTimed = ex.timed;
-      const isFixed = ex.min === ex.max;
-      const pct = isFixed ? 100 : Math.round((xd.reps - ex.min) / (ex.max - ex.min) * 100);
+      const isAmrap = ex.amrap;
+      const isKb = ex.kb;
 
       const row = document.createElement('div');
       row.className = 'ex' + (xd.flagged ? ' flagged' : '');
 
-      const repPill = isTimed
-        ? `<span class="pill pill-sets">${xd.weight}</span>`
-        : `<span class="pill pill-reps"><span class="pill-sets">${ex.sets} sets</span><span class="pill-sep"> / </span>${xd.reps} reps${ex.min !== ex.max ? ' <span class="pill-range">('+ex.min+'–'+ex.max+')</span>' : ''}</span>`;
-
       const cInfo = COACHING[ex.id];
+
+      let repPill;
+      if (isAmrap) {
+        repPill = `<span class="pill pill-reps"><span class="pill-sets">${ex.sets} sets</span><span class="pill-sep"> / </span>max reps</span>`;
+      } else if (isTimed) {
+        repPill = `<span class="pill pill-sets">${xd.weight}</span>`;
+      } else {
+        repPill = `<span class="pill pill-reps"><span class="pill-sets">${ex.sets} sets</span><span class="pill-sep"> / </span>${xd.reps} reps${ex.min !== ex.max ? ' <span class="pill-range">('+ex.min+'–'+ex.max+')</span>' : ''}</span>`;
+      }
+
       const flagLabel = cInfo ? (cInfo.type === 'tempo' || cInfo.type === 'timed' ? '⚑ Progression tip' : '⚑ ' + cInfo.flag + ' tip') : '⚑ Increase weight tip';
       const flagPill = xd.flagged
         ? `<span class="pill pill-flag" onclick="openModal('${ex.id}')">${flagLabel}</span>`
         : '';
 
-      const guidePill = (!xd.flagged && isWeightUnset(ex, xd) && !isTimed)
+      const guidePill = (!xd.flagged && !isAmrap && !isKb && !isTimed && cInfo && (cInfo.type === 'weighted' || cInfo.type === 'vest'))
         ? `<span class="pill pill-guide" onclick="openRIRGuide('${ex.id}')">▸ Start guide</span>`
         : '';
 
-      const bar = '';
-
       const held = S.hold && S.hold[ex.id];
-      const holdPill = (!isTimed && cInfo && cInfo.type !== 'finisher')
+      const holdPill = (!isAmrap && !isKb && !isTimed && cInfo && cInfo.type !== 'finisher')
         ? `<span class="pill pill-hold${held ? ' on' : ''}" onclick="toggleHold('${ex.id}')">${held ? '✓ Holding' : 'Couldn’t finish'}</span>`
         : '';
+
+      let rightControl;
+      if (isAmrap) {
+        const last = (xd.lastReps != null && xd.lastReps !== '') ? xd.lastReps : '';
+        rightControl = `<input class="weight-input rep-log" type="text" value="${last}" placeholder="reps" onclick="openRepLog('${ex.id}')" readonly style="cursor:pointer;" />`;
+      } else if (isKb) {
+        rightControl = `<input class="weight-input" type="text" value="${xd.weight}" onclick="openWeightInput('${ex.id}')" readonly style="cursor:pointer;" />`;
+      } else {
+        const val = xd.weight || '';
+        rightControl = `<input class="weight-input" type="text" value="${val}" placeholder="kg" onclick="openWeightInput('${ex.id}')" readonly style="cursor:pointer;" />`;
+      }
 
       row.innerHTML = `
         <div class="ex-info" onclick="openHowTo('${ex.id}')" style="cursor:pointer;">
@@ -1020,12 +956,11 @@ function renderSession() {
           </div>
         </div>
         <div class="ex-right">
-          <input class="weight-input" type="text" value="${xd.weight}" onclick="openWeightInput('${ex.id}')" readonly style="cursor:pointer;" />
+          ${rightControl}
           <div class="prog-row">
             ${xd.flagged ? flagPill : ''}
             ${guidePill}
             ${holdPill}
-            ${bar}
           </div>
         </div>`;
       c.appendChild(row);
@@ -1174,7 +1109,7 @@ function openHowTo(id) {
   document.getElementById('m-badge').className = 'modal-badge howto';
   document.getElementById('m-desc').textContent = d ? d.how : '';
   document.getElementById('m-hint').innerHTML = d && d.cues
-    ? d.cues.map(c => '• ' + c).join('<br>')
+    ? d.cues.map(c => '• ' + c).join('<br>') + (d.rest ? '<br><br><strong>Rest between sets:</strong> ' + d.rest : '')
     : '';
   document.getElementById('m-weight-section').style.display = 'none';
   document.getElementById('m-confirm').style.display = 'none';
@@ -1194,6 +1129,27 @@ function openWeightInput(id) {
   } else {
     openModal(id);
   }
+}
+
+function openRepLog(id) {
+  const ex = allEx().find(e => e.id === id);
+  const xd = S.ex[id];
+  mTarget = id;
+  document.getElementById('m-name').textContent = ex.name;
+  document.getElementById('m-badge').textContent = 'Log your reps';
+  document.getElementById('m-badge').className = 'modal-badge howto';
+  const last = (xd.lastReps != null && xd.lastReps !== '') ? xd.lastReps : null;
+  document.getElementById('m-desc').textContent = last
+    ? 'Last time you hit ' + last + ' reps on your best set. Beat it!'
+    : 'Log the reps you hit on your best set, then try to beat it next time.';
+  document.getElementById('m-hint').textContent = 'Max-rep set — no weight to add, progress by getting more reps.';
+  document.getElementById('m-weight-section').style.display = 'block';
+  document.getElementById('m-confirm').style.display = '';
+  document.getElementById('m-confirm').textContent = 'Save reps';
+  document.querySelector('#overlay .btn-ghost').textContent = 'Later';
+  document.getElementById('m-input').value = (xd.lastReps != null ? xd.lastReps : '');
+  document.getElementById('m-input').placeholder = 'e.g. 18';
+  document.getElementById('overlay').classList.add('open');
 }
 
 function openRIRGuide(id) {
@@ -1284,6 +1240,18 @@ function saveWeight() {
   const c = COACHING[mTarget];
   const ex = allEx().find(e => e.id === mTarget);
   const xd = S.ex[mTarget];
+
+  // AMRAP rep logging
+  if (ex && ex.amrap) {
+    const val = document.getElementById('m-input').value.trim();
+    if (!val) return;
+    xd.lastReps = val;
+    sv(S);
+    closeModal();
+    toast('Reps logged — beat it next time!');
+    render();
+    return;
+  }
 
   if (!c || c.type === 'weighted' || c.type === 'vest') {
     const val = document.getElementById('m-input').value.trim();
