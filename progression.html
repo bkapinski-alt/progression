@@ -1012,6 +1012,24 @@ const WORKOUTS = {
 };
 function getMode() { try { return localStorage.getItem('prog_mode') || 'capped'; } catch(e) { return 'capped'; } }
 function setModeStore(m) { try { localStorage.setItem('prog_mode', m); } catch(e) {} }
+
+// One-time migration: bring old single-workout progress into the time-capped mode.
+// Runs only if the capped slot is still empty, so it can never overwrite newer data.
+(function migrateOldProgress() {
+  try {
+    const cappedKey = WORKOUTS.capped.key;
+    if (localStorage.getItem(cappedKey)) return; // already have capped data, nothing to do
+    const oldKeys = ['prog_v10', 'prog_v9', 'prog_v8'];
+    for (const k of oldKeys) {
+      const old = localStorage.getItem(k);
+      if (old) {
+        localStorage.setItem(cappedKey, old);
+        break;
+      }
+    }
+  } catch(e) {}
+})();
+
 let MODE = getMode();
 let DAYS = WORKOUTS[MODE].DAYS;
 let COACHING = WORKOUTS[MODE].COACHING;
